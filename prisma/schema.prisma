@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Channel {
+  id        String   @unique @id
+  createdAt DateTime @default(now())
+  location  String
+  optout    Boolean  @default(false)
+}

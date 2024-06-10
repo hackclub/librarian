@@ -1,0 +1,18 @@
+{
+  "name": "directory",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "fmt": "npx prettier --write '**/*.js'",
+    "dev": "npx nodemon ."
+  },
+  "dependencies": {
+    "@prisma/client": "5.15.0",
+    "@slack/bolt": "^3.18.0",
+    "dotenv": "^16.4.5",
+    "pretty-ms": "7.0.1",
+    "prisma": "^5.15.0"
+  }
+}
