@@ -93,7 +93,16 @@ const app = new App({
             text,
         });
     }
-    pull();
-    setInterval(pull, 1000 * 3000);
+    await pull();
+    setInterval(pull, 1000 * 30);
+
+    app.message(/.*/gim, async ({ message }) => {
+        if (message.channel == process.env.SLACK_CHANNEL)
+            await app.client.chat.delete({
+                channel: message.channel,
+                ts: message.ts,
+                token: process.env.SLACK_USER_TOKEN
+            })
+    })
     console.log("⚡️ Bolt app is running!");
 })();
