@@ -8,6 +8,7 @@ module.exports = {
     "C077R6LC3C1", // #directory (this bot!)
     "CT0BV6UMV", //  #confessions-meta,
     "C0188CY57PZ", // #meta
+    "C01T5J557AA", // #ssh-chat-bridge
 
     // Introducing: Bot hell
     // Too lazy to type names for all bot channels ever, so...

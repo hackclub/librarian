@@ -16,12 +16,12 @@ module.exports = {
       token: process.env.SLACK_USER_TOKEN,
     });
     var text = `:siren-real: Latest message: ${pms(Date.now() - Math.floor(messages.messages.matches[0].ts * 1000))} ago (from *now*)\n\n`;
-
     const channels = messages.messages.matches
       .filter(
         (match) =>
           match.channel.is_channel &&
           !match.channel.is_private &&
+          match.text != "archived the channel" &&
           !utils.blockedChannels.includes(match.channel.id),
       )
       .map((match) => match.channel.id)
