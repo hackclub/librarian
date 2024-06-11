@@ -70,7 +70,9 @@ const app = new App({
 
     });
     var text = ""
+
     async function pull() {
+        text = ""
         let sPromises = fs
             .readdirSync("./sections")
             .filter((str) => str.endsWith(".js"))
