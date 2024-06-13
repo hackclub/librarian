@@ -5,11 +5,12 @@ module.exports = {
     "CNMU9L92Q", // #confessions (reasons are obvious)
     "CCZ5LRL6P", // #politics (reasons are obvious)
     "C0159TSJVH8", // #what-is-my-slack-id
-    "C077R6LC3C1", // #directory (this bot!)
+    "C077R6LC3C1", // #diredctory
     "CT0BV6UMV", //  #confessions-meta,
     "C0188CY57PZ", // #meta
     "C01T5J557AA", // #ssh-chat-bridge (banned users use this)
     "C02GK2TVAVB", // #temp-email
+    "C078Q8PBD4G", // #library
 
     // Here's a list of bot channels/spammy channels
     // This goes here in order to prevent the indexing of artificially inflated rankings

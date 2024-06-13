@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
  * @param {{app: import('@slack/bolt').App}} param1
  */
 module.exports = async function ({ app }) {
-  app.command("/optout-directory", async ({ command, body, ack, respond }) => {
+  app.command("/optout-library", async ({ command, body, ack, respond }) => {
     await ack();
     const channelId = body.channel_id;
     const channel = await app.client.conversations.info({
@@ -34,7 +34,7 @@ module.exports = async function ({ app }) {
         "This channel cannot be locked as it is locked in the database. Usually, this is because it is a public, community-owned channel, i.e. #lounge, #code, etc.",
       );
     else if (channelRecord.optout)
-      return await respond("This channel is already opted out of directory.");
+      return await respond("This channel is already opted out of the library.");
     else
       await prisma.channel.update({
         where: {
@@ -47,7 +47,7 @@ module.exports = async function ({ app }) {
     await app.client.chat.postEphemeral({
       channel: channel.channel.id,
       user: command.user_id,
-      text: "This channel has been removed from the directory. Please allow up to 1 hour for all data to be flushed.",
+      text: "This channel has been removed from the library. Please allow up to 1 hour for all data to be flushed.",
     });
     if (channel.channel.is_member)
       await app.client.conversations.leave({

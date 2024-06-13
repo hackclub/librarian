@@ -25,7 +25,7 @@ module.exports = async function ({ app, client }) {
   );
   const tmesg = await app.client.chat.postMessage({
     channel: process.env.SLACK_CHANNEL,
-    text: "Loading drectory",
+    text: "Loading library",
   });
   await client.set("messageId", tmesg.ts);
 };

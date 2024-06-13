@@ -16,7 +16,7 @@ module.exports = async function ({ app, client }) {
           });
           await app.client.chat.postMessage({
             channel: channel.id,
-            text: `Nice channel you got there. I'm librarian, which is created by HQ to help people find new and active channels. No message data is collected/stored, just how many messages are sent in a certain timeframe. If you do not want me in this channel and you do not want your channel in #directory, please run the command /optout-directory.`,
+            text: `Nice channel you got there. I'm Librarian, which is created by HQ to help people find new and active channels. No message data is collected/stored, just how many messages are sent in a certain timeframe. If you do not want me in this channel and you do not want your channel in #directory, please run the command /optout-directory.`,
           });
           resolve();
         }, 1000);
