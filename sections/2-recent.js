@@ -21,8 +21,8 @@ module.exports = {
         (match) =>
           match.channel.is_channel &&
           !match.channel.is_private &&
-          match.text != "archived the channel" &&
-          !utils.blockedChannels.includes(match.channel.id),
+          match.text != "archived the channel" /*&&
+          !utils.blockedChannels.includes(match.channel.id)*/,
       )
       .map((match) => match.channel.id)
       .reduce((acc, channel) => {
@@ -32,10 +32,10 @@ module.exports = {
     const sortedChannels = Object.keys(channels).sort(
       (a, b) => channels[b] - channels[a],
     );
-
+    text += "Recent: [";
     sortedChannels.forEach((channel) => {
       text += `<#${channel}> `;
     });
-    return text;
+    return text + "]";
   },
 };

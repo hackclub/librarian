@@ -9,6 +9,9 @@ const app = new App({
   appToken: process.env.SLACK_APP_TOKEN,
   port: process.env.PORT,
 });
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
 
 (async () => {
   const client = await createClient({
@@ -42,5 +45,4 @@ const app = new App({
   console.log("Librarian has started.");
   await app.start(process.env.PORT || 3000);
   require("./interactions/channel_created")({ app, client });
-
 })();
