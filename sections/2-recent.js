@@ -21,8 +21,8 @@ module.exports = {
         (match) =>
           match.channel.is_channel &&
           !match.channel.is_private &&
-          match.text != "archived the channel" /*&&
-          !utils.blockedChannels.includes(match.channel.id)*/,
+          match.text != "archived the channel" &&
+          !utils.blockedChannels.includes(match.channel.id),
       )
       .map((match) => match.channel.id)
       .reduce((acc, channel) => {

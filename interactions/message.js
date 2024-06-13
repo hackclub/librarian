@@ -12,7 +12,7 @@ module.exports = ({ app, client }) => {
         ts: message.ts,
         token: process.env.SLACK_USER_TOKEN,
       });
-    // if (utils.blockedChannels.includes(message.channel)) return;
+     if (utils.blockedChannels.includes(message.channel)) return;
 
     if (
       (await client.exists("messageText")) &&
