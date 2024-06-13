@@ -8,6 +8,7 @@ module.exports = ({ app, client }) => {
       parseInt(client.get("newChannelMessage")) > Date.now()
     )
       return;
+
     if (utils.blockedChannels.includes(message.channel)) return;
     if (
       (await client.exists("messageText")) &&
@@ -19,11 +20,12 @@ module.exports = ({ app, client }) => {
         `Latest message: (in <#${message.channel}>) ${pms(Date.now() - Math.floor(parseInt(message.ts) * 1000))} ago`,
       );
       console.log(await client.get("messageId"), process.env.SLACK_CHANNEL);
-      app.client.chat.update({
+      await app.client.chat.update({
         channel: process.env.SLACK_CHANNEL,
         ts: await client.get("messageId"),
         text: newText,
       });
+      client.set("newChannelMessage", Date.now() + 1300)
     }
   });
   app.message(/.*/gim, async ({ message }) => {
