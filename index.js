@@ -37,8 +37,9 @@ const app = new App({
   setInterval(async function () {
     await require("./utils/pull")({ app, client });
   }, 1000 * 30);
+  await require("./utils/joinall")({ app, client });
 
-  console.log("Directory has started.");
+  console.log("Librarian has started.");
   await app.start(process.env.PORT || 3000);
   require("./interactions/channel_created")({ app, client });
 
