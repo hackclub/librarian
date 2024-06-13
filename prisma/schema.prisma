@@ -10,6 +10,7 @@ datasource db {
 model Channel {
   id        String   @unique @id
   createdAt DateTime @default(now())
-  location  String
+  location  String?
   optout    Boolean  @default(false)
+  locked    Boolean  @default(false)
 }

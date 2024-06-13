@@ -1,8 +1,7 @@
 require("dotenv").config();
 const { App } = require("@slack/bolt");
-const fs = require("fs");
 const { createClient } = require("redis");
-const pms = require("pretty-ms");
+
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -18,91 +17,39 @@ const app = new App({
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
 
-  async function redoMessage() {
-    const data = await app.client.conversations.history({
-      channel: process.env.SLACK_CHANNEL,
-    });
-    const { messages } = data;
+  // Load commands
 
-    await Promise.all(
-      messages.map((message) =>
-        app.client.chat
-          .delete({
-            token: process.env.SLACK_USER_TOKEN,
-            channel: process.env.SLACK_CHANNEL,
-            ts: message?.ts,
-            thread_ts: message?.thread_ts,
-          })
-          .catch((e) => {
-            console.warn(e);
-          }),
-      ),
-    );
-    const tmesg = await app.client.chat.postMessage({
-      channel: process.env.SLACK_CHANNEL,
-      text: "Loading drectory",
-    });
-    await client.set("messageId", tmesg.ts);
-  }
+  require("./commands/optout")({ app, client });
 
-  setInterval(redoMessage, 1000 * 60 * 60 * 12);
-  await redoMessage();
+  // This deletes and sends a new message to bypass the 10 day editing limit
+  setInterval(
+    async function () {
+      await require("./utils/redo")({ app, client });
+    },
+    1000 * 60 * 60 * 12,
+  );
+  // This runs the same thing on startup
+  await require("./utils/redo")({ app, client });
+  // app.message functions go here
+  require("./interactions/message")({ app, client });
+
+  await require("./utils/pull")({ app, client });
+  setInterval(async function () {
+    await require("./utils/pull")({ app, client });
+  }, 1000 * 30);
+
+  console.log("Directory has started.");
   await app.start(process.env.PORT || 3000);
-
-  app.message(/.*/gim, async ({ message, say }) => {
-    //if (await client.exists("newChannelMessage") && parseInt(client.get("newChannelMessage")) > Date.now()) return
-    if (
-      (await client.exists("messageText")) &&
-      (await client.exists("messageId"))
-    ) {
-      const tmpText = await client.get("messageText");
-      const newText = tmpText.replace(
-        /Latest message: .*? ago/,
-        `Latest message: ${pms(Date.now() - Math.floor(parseInt(message.ts) * 1000))} ago`,
-      );
-      console.log(await client.get("messageId"), process.env.SLACK_CHANNEL);
-      app.client.chat.update({
-        channel: process.env.SLACK_CHANNEL,
-        ts: await client.get("messageId"),
-        text: newText,
-      });
-    }
-  });
-  var text = "";
-
-  async function pull() {
-    text = "";
-    let sPromises = fs
-      .readdirSync("./sections")
-      .filter((str) => str.endsWith(".js"))
-      .sort()
-      .map(async (fn) => {
-        const section = await require(`./sections/${fn}`);
-        const rend = (await section.render({ app })).trim();
-        text += `${section.title}\n\n${rend}\n\n════════════════════════════════════\n`;
-      });
-
-    await Promise.all(sPromises);
-    /*
-     */
-    text += `\nLast Updated on ${new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeStyle: "short", dateStyle: "long" })} (EST)`;
-    client.set("messageText", text);
-    app.client.chat.update({
-      channel: process.env.SLACK_CHANNEL,
-      ts: await client.get("messageId"),
-      text,
+  app.event("channel_created", async ({ event, body }) => {
+    const channelId = event.channel.id;
+    const userId = event.channel.creator;
+    await app.client.conversations.join({
+      channel: channelId,
     });
-  }
-  await pull();
-  setInterval(pull, 1000 * 30);
-
-  app.message(/.*/gim, async ({ message }) => {
-    if (message.channel == process.env.SLACK_CHANNEL)
-      await app.client.chat.delete({
-        channel: message.channel,
-        ts: message.ts,
-        token: process.env.SLACK_USER_TOKEN,
-      });
+    await app.client.chat.postEphemeral({
+      channel: channelId,
+      user: userId,
+      text: `Nice channel you got there. I'm librarian, which is created by HQ to help people find new and active channels. No message data is collected/stored, just how many messages are sent in a certain timeframe. If you do not want me in this channel and you do not want your channel in #directory, please run the command /optout-directory.`,
+    });
   });
-  console.log("⚡️ Bolt app is running!");
 })();

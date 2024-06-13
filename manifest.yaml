@@ -1,0 +1,32 @@
+display_information:
+  name: Directory
+features:
+  bot_user:
+    display_name: Directory
+    always_online: false
+oauth_config:
+  scopes:
+    user:
+      - channels:read
+      - chat:write
+      - search:read
+      - channels:history
+    bot:
+      - channels:read
+      - chat:write
+      - channels:history
+      - groups:history
+      - mpim:history
+      - im:history
+settings:
+  event_subscriptions:
+    request_url: https://community-directory-14ac34b97af2.herokuapp.com/slack/events
+    bot_events:
+      - message.channels
+  interactivity:
+    is_enabled: true
+    request_url: https://community-directory-14ac34b97af2.herokuapp.com/slack/events
+    message_menu_options_url: https://community-directory-14ac34b97af2.herokuapp.com/slack/events
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
