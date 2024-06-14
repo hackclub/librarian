@@ -34,7 +34,7 @@ Array.prototype.random = function () {
   // This runs the same thing on startup
   await require("./utils/redo")({ app, client });
   // app.message functions go here
-  require("./interactions/message")({ app, client });
+  await require("./interactions/message")({ app, client });
 
   await require("./utils/pull")({ app, client });
   setInterval(async function () {
