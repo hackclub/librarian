@@ -1,6 +1,11 @@
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+/**
+ * @param {{app: import('@slack/bolt').App}} param1
+ */
 module.exports = async function ({ app, client }) {
   async function rake(cursor) {
     if (process.env.JOIN_ALL_CHANNELS !== "abc") return;
@@ -9,15 +14,19 @@ module.exports = async function ({ app, client }) {
       cursor,
     });
     let joinPromises = convos.channels.map((channel) => {
-      return new Promise((resolve) => {
+      return new Promise(async (resolve) => {
+        const channelRecord = await prisma.channel.findFirst({
+          where: {
+            id: channel.id
+          }
+        })
+        if (channelRecord && channelRecord.optout) return
+        if (channel.is_member) return
         setTimeout(async () => {
           await app.client.conversations.join({
             channel: channel.id,
           });
-          await app.client.chat.postMessage({
-            channel: channel.id,
-            text: `Nice channel you got there. I'm Librarian, which is created by HQ to help people find new and active channels. No message data is collected/stored, just how many messages are sent in a certain timeframe. If you do not want me in this channel and you do not want your channel in #directory, please run the command /optout-directory.`,
-          });
+          console.log(`Joined ${channel.name_normalized} (${channel.id})`)
           resolve();
         }, 1000);
       });
@@ -30,4 +39,5 @@ module.exports = async function ({ app, client }) {
       }, 3000);
     else console.log("Finished joining all channels");
   }
+  rake()
 };

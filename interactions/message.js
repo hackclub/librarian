@@ -1,10 +1,9 @@
 const utils = require("../utils");
 const pms = require("pretty-ms");
-
+/**
+ * @param {{app: import('@slack/bolt').App}} param1
+ */
 module.exports = ({ app, client }) => {
-  /**
-   * @param {{app: import('@slack/bolt').App}} param1
-   */
   app.message(/.*/gim, async ({ message, say, body }) => {
     if (message.channel == process.env.SLACK_CHANNEL)
       await app.client.chat.delete({
