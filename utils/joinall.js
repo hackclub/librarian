@@ -13,33 +13,35 @@ module.exports = async function ({ app, client }) {
       limit: 999,
       cursor,
     });
-    let joinPromises = convos.channels.map((channel) => {
-      return new Promise(async (resolve) => {
+    for (const channel of convos.channels) {
+      await new Promise(async (resolve, reject) => {
         const channelRecord = await prisma.channel.findFirst({
           where: {
             id: channel.id,
           },
         });
-        if (channelRecord && channelRecord.optout) return;
-        if (channel.is_member || channel.is_archived || channel.is_private)
-          return;
-        setTimeout(async () => {
-          try {
-            await app.client.conversations.join({
-              channel: channel.id,
-            });
-            console.log(`Joined ${channel.name_normalized} (${channel.id})`);
-          } catch (e) {
-            console.warn(
-              `Failed to join ${channel.name_normalized} (${channel.id})`,
-            );
-          }
+        if (channelRecord && channelRecord.optout) {
           resolve();
-        }, 1000);
-      });
-    });
+          return;
+        }
+        if (channel.is_member || channel.is_archived || channel.is_private) {
+          resolve();
+          return;
+        }
+        try {
+          await app.client.conversations.join({
+            channel: channel.id,
+          });
+          console.log(`Joined ${channel.name_normalized} (${channel.id})`);
+          setTimeout(resolve, 1200);
+        } catch (e) {
+          console.warn(`Failed to join ${channel.name_normalized} (${channel.id})`);
+          setTimeout(resolve, 1200);
 
-    await Promise.all(joinPromises);
+        }
+
+      });
+    }
     if (convos.response_metadata.next_cursor)
       setTimeout(async function () {
         await rake(convos.response_metadata.next_cursor);
