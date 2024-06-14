@@ -17,16 +17,23 @@ module.exports = async function ({ app, client }) {
       return new Promise(async (resolve) => {
         const channelRecord = await prisma.channel.findFirst({
           where: {
-            id: channel.id
-          }
-        })
-        if (channelRecord && channelRecord.optout) return
-        if (channel.is_member) return
+            id: channel.id,
+          },
+        });
+        if (channelRecord && channelRecord.optout) return;
+        if (channel.is_member || channel.is_archived || channel.is_private)
+          return;
         setTimeout(async () => {
-          await app.client.conversations.join({
-            channel: channel.id,
-          });
-          console.log(`Joined ${channel.name_normalized} (${channel.id})`)
+          try {
+            await app.client.conversations.join({
+              channel: channel.id,
+            });
+            console.log(`Joined ${channel.name_normalized} (${channel.id})`);
+          } catch (e) {
+            console.warn(
+              `Failed to join ${channel.name_normalized} (${channel.id})`,
+            );
+          }
           resolve();
         }, 1000);
       });
@@ -39,5 +46,5 @@ module.exports = async function ({ app, client }) {
       }, 3000);
     else console.log("Finished joining all channels");
   }
-  rake()
+  rake();
 };
