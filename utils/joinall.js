@@ -35,11 +35,11 @@ module.exports = async function ({ app, client }) {
           console.log(`Joined ${channel.name_normalized} (${channel.id})`);
           setTimeout(resolve, 1200);
         } catch (e) {
-          console.warn(`Failed to join ${channel.name_normalized} (${channel.id})`);
+          console.warn(
+            `Failed to join ${channel.name_normalized} (${channel.id})`,
+          );
           setTimeout(resolve, 1200);
-
         }
-
       });
     }
     if (convos.response_metadata.next_cursor)

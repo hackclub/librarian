@@ -1,4 +1,4 @@
-const figlet = require("figlet")
+const figlet = require("figlet");
 module.exports = {
   title: "Hardware",
   action_id: "hardware_btn",
@@ -9,11 +9,11 @@ module.exports = {
   render: async function ({ app }) {
     return `\`\`\`
 ${figlet.textSync("Hardware", {
-      horizontalLayout: "default",
-      verticalLayout: "default",
-      width: 60,
-      whitespaceBreak: true,
-    })}
+  horizontalLayout: "default",
+  verticalLayout: "default",
+  width: 60,
+  whitespaceBreak: true,
+})}
 \`\`\`
 Hack Club has started the process of getting teenagers into more hardware-based projects!
 
@@ -23,6 +23,6 @@ OnBoard: Get $100 to build your own custom PCB. Learn more at https://hackclub.c
 
 Bin: Get a free custom hardware kit made for you shipped to your doorstep. Learn more at https://hackclub.com/bin (<#C056AMWSFKJ>)
 
-All of these events and programs are *free* for you to attend.`
+All of these events and programs are *free* for you to attend.`;
   },
 };
