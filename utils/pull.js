@@ -53,22 +53,24 @@ module.exports = async function ({ app, client }) {
   text += `\nLast Updated on ${new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeStyle: "short", dateStyle: "long" })} (EST)\nWant to dive into a specific subject? Click one of the buttons below:`;
   client.set("messageText", text);
 
-  app.client.chat.update({
-    channel: process.env.SLACK_CHANNEL,
-    ts: await client.get("messageId"),
-    blocks: [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: text,
+  try {
+    await app.client.chat.update({
+      channel: process.env.SLACK_CHANNEL,
+      ts: await client.get("messageId"),
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: text,
+          },
         },
-      },
-      {
-        type: "actions",
-        elements: subBlocks,
-      },
-    ],
-    text,
-  });
+        {
+          type: "actions",
+          elements: subBlocks,
+        },
+      ],
+      text,
+    });
+  } catch (e) { }
 };

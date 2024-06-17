@@ -36,18 +36,20 @@ module.exports = ({ app, client }) => {
         })
         .join("\n");
 
-      await app.client.chat.update({
-        channel: process.env.SLACK_CHANNEL,
-        ts: await client.get("messageId"),
-        text: newText,
-      });
-      setTimeout(async function () {
+      try {
         await app.client.chat.update({
           channel: process.env.SLACK_CHANNEL,
           ts: await client.get("messageId"),
-          text: newText.replaceAll(":boom:", ""),
+          text: newText,
         });
-      }, 1000);
+        setTimeout(async function () {
+          await app.client.chat.update({
+            channel: process.env.SLACK_CHANNEL,
+            ts: await client.get("messageId"),
+            text: newText.replaceAll(":boom:", ""),
+          });
+        }, 1000);
+      } catch (e) { }
       client.set("newChannelMessage", Date.now() + 1300);
     }
   });
