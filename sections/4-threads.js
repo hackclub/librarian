@@ -8,7 +8,7 @@ module.exports = {
     render: async function ({ app }) {
         function reduceText(text, link) {
             if (text.length <= 160) return text
-            if (text.split("\n").length > 1) return text.split("\n")[0].slice(0, 160) + `<${link}|[...]>`
+            if (text.split("\n").length > 1) return (text.split("\n")[0].slice(0, 160) + `<${link}|[...]>`)
             return text.slice(0, 160) + `<${link}|[...]>`
         }
         const messages = await app.client.search.messages({
@@ -34,7 +34,7 @@ module.exports = {
         }, []).slice(0, 5)
 
         uniqueMessages.forEach(function (msg) {
-            text += `> ${reduceText(msg.text)}\nFrom <#${msg.channel}> (<${msg.permalink}|Source>)\n\n`
+            text += `> ${reduceText(msg.text, msg.permalink)}\nFrom <#${msg.channel}> (<${msg.permalink}|Source>)\n\n`
         })
         return text
     },
