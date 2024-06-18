@@ -19,7 +19,7 @@ module.exports = {
             token: process.env.SLACK_USER_TOKEN,
         });
         var text = ""
-        let uniqueMessages = messages.messages.matches.reduce((acc, message) => {
+        let uniqueMessages = messages.messages.matches.filter(message=>!message.channel.is_private).reduce((acc, message) => {
             let thread_ts = new URL(message.permalink).searchParams.get("thread_ts");
             if (message.channel.is_private || !message.channel.is_channel || message.is_mpim) acc
             if (!acc.find(item => item.thread_ts === thread_ts)) {
