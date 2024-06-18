@@ -1,8 +1,6 @@
 const figlet = require("figlet");
 module.exports = {
   title: "Upcoming Events",
-  action_id: "hardware_btn",
-  description: "Channels featured by Hack Club",
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */

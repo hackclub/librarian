@@ -1,8 +1,6 @@
 const figlet = require("figlet");
 module.exports = {
   title: "Hardware",
-  action_id: "hardware_btn",
-  description: "Channels featured by Hack Club",
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */
@@ -23,6 +21,6 @@ OnBoard: Get $100 to build your own custom PCB. Learn more at https://hackclub.c
 
 Bin: Get a free custom hardware kit made for you shipped to your doorstep. Learn more at https://hackclub.com/bin (<#C056AMWSFKJ>)
 
-All of these events and programs are *free* for you to attend.`;
+All of these events and programs are *free* for you to participate in.`;
   },
 };

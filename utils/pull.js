@@ -72,5 +72,5 @@ module.exports = async function ({ app, client }) {
       ],
       text,
     });
-  } catch (e) { }
+  } catch (e) {}
 };
