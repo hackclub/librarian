@@ -15,10 +15,10 @@ module.exports = ({ app, client }) => {
     if (utils.blockedChannels.includes(message.channel)) return;
 
     if (
-      (await client.exists("messageText")) &&
-      (await client.exists("messageId"))
+      (await client.exists(`${process.env.INSTANCE_ID || "production"}.messageText`)) &&
+      (await client.exists(`${process.env.INSTANCE_ID || "production"}.messageId`))
     ) {
-      const tmpText = await client.get("messageText");
+      const tmpText = await client.get(`${process.env.INSTANCE_ID || "production"}.messageText`);
       var newText = tmpText.replace(
         /Latest message: .*? ago/,
         `Latest message: (in <#${message.channel}>) ${pms(Date.now() - Math.floor(parseInt(message.ts) * 1000))} ago`,
@@ -55,9 +55,7 @@ module.exports = ({ app, client }) => {
             action_id: id,
           });
           app.action(id, async ({ ack, respond, say, body }) => {
-            console.log("hello");
             await ack();
-            //await say("hello")
 
             await app.client.chat.postEphemeral({
               channel: body.channel.id,
@@ -71,7 +69,7 @@ module.exports = ({ app, client }) => {
       try {
         await app.client.chat.update({
           channel: process.env.SLACK_CHANNEL,
-          ts: await client.get("messageId"),
+          ts: await client.get(`${process.env.INSTANCE_ID || "production"}.messageId`),
           blocks: [
             {
               type: "section",
@@ -89,7 +87,7 @@ module.exports = ({ app, client }) => {
         setTimeout(async function () {
           await app.client.chat.update({
             channel: process.env.SLACK_CHANNEL,
-            ts: await client.get("messageId"),
+            ts: await client.get(`${process.env.INSTANCE_ID || "production"}.messageId`),
             blocks: [
               {
                 type: "section",

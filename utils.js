@@ -26,4 +26,7 @@ module.exports = {
     "C02T3CU03T3",
     "C02HSS9Q3D5",
   ],
+  queries: {
+    topThreads: `is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`
+  }
 };

@@ -36,7 +36,6 @@ module.exports = async function ({ app, client }) {
         action_id: id,
       });
       app.action(id, async ({ ack, respond, say, body }) => {
-        console.log("hello");
         await ack();
         //await say("hello")
 
@@ -56,7 +55,7 @@ module.exports = async function ({ app, client }) {
   try {
     await app.client.chat.update({
       channel: process.env.SLACK_CHANNEL,
-      ts: await client.get("messageId"),
+      ts: await client.get(`${process.env.INSTANCE_ID || "production"}.messageId`),
       blocks: [
         {
           type: "section",
@@ -72,5 +71,5 @@ module.exports = async function ({ app, client }) {
       ],
       text,
     });
-  } catch (e) {}
+  } catch (e) { }
 };
