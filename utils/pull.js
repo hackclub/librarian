@@ -50,7 +50,7 @@ module.exports = async function ({ app, client }) {
   await Promise.all(bPromises);
 
   text += `\nLast Updated on ${new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeStyle: "short", dateStyle: "long" })} (EST)\nWant to dive into a specific subject? Click one of the buttons below:`;
-  client.set("messageText", text);
+  client.set(`${process.env.INSTANCE_ID || "production"}.messageText`, text);
 
   try {
     await app.client.chat.update({

@@ -104,7 +104,7 @@ module.exports = ({ app, client }) => {
           });
         }, 1000);
       } catch (e) {}
-      client.set("newChannelMessage", Date.now() + 1300);
+      client.set(`${process.env.INSTANCE_ID || "production"}.newChannelMessage`, Date.now() + 1300);
     }
   });
 };

@@ -27,5 +27,5 @@ module.exports = async function ({ app, client }) {
     channel: process.env.SLACK_CHANNEL,
     text: "Loading library",
   });
-  await client.set("messageId", tmesg.ts);
+  await client.set(`${process.env.INSTANCE_ID || "production"}.messageId`, tmesg.ts);
 };
