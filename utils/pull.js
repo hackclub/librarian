@@ -42,7 +42,7 @@ module.exports = async function ({ app, client }) {
         await app.client.chat.postEphemeral({
           channel: body.channel.id,
           user: body.user.id,
-          text: await require(body.actions[0].value).render({ app }),
+          text: await require(body.actions[0].value).render({ app, body }),
         });
       });
     });
@@ -55,7 +55,10 @@ module.exports = async function ({ app, client }) {
   try {
     await app.client.chat.update({
       channel: process.env.SLACK_CHANNEL,
-      ts: await client.get(`${process.env.INSTANCE_ID || "production"}.messageId`),
+      ts: await client.get(
+        `${process.env.INSTANCE_ID || "production"}.messageId`,
+      ),
+      text: `New directory update ${new Date()}`,
       blocks: [
         {
           type: "section",
@@ -71,5 +74,5 @@ module.exports = async function ({ app, client }) {
       ],
       text,
     });
-  } catch (e) { }
+  } catch (e) {}
 };

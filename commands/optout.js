@@ -29,7 +29,7 @@ module.exports = async function ({ app }) {
           optout: true,
         },
       });
-    else if (channelRecord.locked)
+    else if (channelRecord.locked && !user.user.is_admin)
       return await respond(
         "This channel cannot be locked as it is locked in the database. Usually, this is because it is a public, community-owned channel, i.e. #lounge, #code, etc.",
       );
@@ -42,6 +42,8 @@ module.exports = async function ({ app }) {
         },
         data: {
           optout: true,
+          lat: null,
+          lon: null,
         },
       });
     await app.client.chat.postEphemeral({

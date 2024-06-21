@@ -25,7 +25,10 @@ module.exports = async function ({ app, client }) {
   );
   const tmesg = await app.client.chat.postMessage({
     channel: process.env.SLACK_CHANNEL,
-    text: "Loading library",
+    text: ":spin-loading: Loading library",
   });
-  await client.set(`${process.env.INSTANCE_ID || "production"}.messageId`, tmesg.ts);
+  await client.set(
+    `${process.env.INSTANCE_ID || "production"}.messageId`,
+    tmesg.ts,
+  );
 };

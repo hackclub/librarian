@@ -25,8 +25,10 @@ module.exports = {
     "C05RETCS0EL",
     "C02T3CU03T3",
     "C02HSS9Q3D5",
+    "C02B7CWDD0E",
   ],
   queries: {
-    topThreads: `is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`
-  }
+    topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
+    topChannels: `-is:dm -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
+  },
 };

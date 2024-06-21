@@ -15,10 +15,16 @@ module.exports = ({ app, client }) => {
     if (utils.blockedChannels.includes(message.channel)) return;
 
     if (
-      (await client.exists(`${process.env.INSTANCE_ID || "production"}.messageText`)) &&
-      (await client.exists(`${process.env.INSTANCE_ID || "production"}.messageId`))
+      (await client.exists(
+        `${process.env.INSTANCE_ID || "production"}.messageText`,
+      )) &&
+      (await client.exists(
+        `${process.env.INSTANCE_ID || "production"}.messageId`,
+      ))
     ) {
-      const tmpText = await client.get(`${process.env.INSTANCE_ID || "production"}.messageText`);
+      const tmpText = await client.get(
+        `${process.env.INSTANCE_ID || "production"}.messageText`,
+      );
       var newText = tmpText.replace(
         /Latest message: .*? ago/,
         `Latest message: (in <#${message.channel}>) ${pms(Date.now() - Math.floor(parseInt(message.ts) * 1000))} ago`,
@@ -27,13 +33,10 @@ module.exports = ({ app, client }) => {
       newText = newText
         .split("\n")
         .map((ln) => {
-          if (!ln.match(/\[([^\]]+)\]/g)) return ln;
-          var newLine = ln
-            .match(/\[([^\]]+)\]/g)[0]
-            .replace("[", "")
-            .replace("]", "")
-            .replace(`${body.event.channel}>`, `${body.event.channel}> :boom:`);
-          return newLine;
+          return ln.replaceAll(
+            `<#${body.event.channel}>`,
+            `<#${body.event.channel}> :boom:`,
+          );
         })
         .join("\n");
       var subBlocks = [];
@@ -60,7 +63,7 @@ module.exports = ({ app, client }) => {
             await app.client.chat.postEphemeral({
               channel: body.channel.id,
               user: body.user.id,
-              text: await require(body.actions[0].value).render({ app }),
+              text: await require(body.actions[0].value).render({ app, body }),
             });
           });
         });
@@ -69,7 +72,10 @@ module.exports = ({ app, client }) => {
       try {
         await app.client.chat.update({
           channel: process.env.SLACK_CHANNEL,
-          ts: await client.get(`${process.env.INSTANCE_ID || "production"}.messageId`),
+          ts: await client.get(
+            `${process.env.INSTANCE_ID || "production"}.messageId`,
+          ),
+          text: `New directory update ${new Date()}`,
           blocks: [
             {
               type: "section",
@@ -87,7 +93,10 @@ module.exports = ({ app, client }) => {
         setTimeout(async function () {
           await app.client.chat.update({
             channel: process.env.SLACK_CHANNEL,
-            ts: await client.get(`${process.env.INSTANCE_ID || "production"}.messageId`),
+            ts: await client.get(
+              `${process.env.INSTANCE_ID || "production"}.messageId`,
+            ),
+            text: `New directory update ${new Date()}`,
             blocks: [
               {
                 type: "section",
@@ -104,7 +113,10 @@ module.exports = ({ app, client }) => {
           });
         }, 1000);
       } catch (e) {}
-      client.set(`${process.env.INSTANCE_ID || "production"}.newChannelMessage`, Date.now() + 1300);
+      client.set(
+        `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
+        Date.now() + 1300,
+      );
     }
   });
 };

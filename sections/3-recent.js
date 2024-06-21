@@ -7,9 +7,8 @@ module.exports = {
    * @param {{app: import('@slack/bolt').App}} param1
    */
   render: async function ({ app }) {
-    const query = "-is:dm";
     let messages = await app.client.search.messages({
-      query,
+      query: utils.queries.topChannels,
       sort: "timestamp",
       sort_dir: "desc",
       count: 100,
@@ -32,10 +31,10 @@ module.exports = {
     const sortedChannels = Object.keys(channels).sort(
       (a, b) => channels[b] - channels[a],
     );
-    text += "Recent: [";
+    var text = "";
     sortedChannels.forEach((channel) => {
-      text += `<#${channel}> `;
+      text += `- <#${channel}>\n`;
     });
-    return text + "]";
+    return text;
   },
 };

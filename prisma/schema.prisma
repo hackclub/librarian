@@ -8,9 +8,17 @@ datasource db {
 }
 
 model Channel {
-  id        String   @unique @id
+  id        String   @id @unique
   createdAt DateTime @default(now())
-  location  String?
+  lat       String?
+  lon       String?
   optout    Boolean  @default(false)
   locked    Boolean  @default(false)
+}
+
+model User {
+  id        String   @id @unique
+  createdAt DateTime @default(now())
+  lat       String?
+  lon       String?
 }

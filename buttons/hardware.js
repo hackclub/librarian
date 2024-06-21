@@ -19,8 +19,6 @@ Trail: 30 Hack Clubbers build PCBs that will be useful on the trail and hike for
 
 OnBoard: Get $100 to build your own custom PCB. Learn more at https://hackclub.com/onboard (<#C056AMWSFKJ>)
 
-Bin: Get a free custom hardware kit made for you shipped to your doorstep. Learn more at https://hackclub.com/bin (<#C056AMWSFKJ>)
-
 All of these events and programs are *free* for you to participate in.`;
   },
 };

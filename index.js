@@ -23,6 +23,8 @@ Array.prototype.random = function () {
   // Load commands
 
   require("./commands/optout")({ app, client });
+  require("./commands/setlocation")({ app, client });
+  require("./commands/setuserlocation")({ app, client });
 
   // This deletes and sends a new message to bypass the 10 day editing limit
   setInterval(
