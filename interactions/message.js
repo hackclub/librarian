@@ -13,7 +13,7 @@ module.exports = ({ app, client }) => {
         token: process.env.SLACK_USER_TOKEN,
       });
     if (utils.blockedChannels.includes(message.channel)) return;
-
+    if (await client.exists(`${process.env.INSTANCE_ID || "production"}.newChannelMessage`) || Date.now() < client.get(`${process.env.INSTANCE_ID || "production"}.newChannelMessage`))
     if (
       (await client.exists(
         `${process.env.INSTANCE_ID || "production"}.messageText`,
@@ -113,7 +113,7 @@ module.exports = ({ app, client }) => {
           });
         }, 1000);
       } catch (e) {}
-      client.set(
+      await client.set(
         `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
         Date.now() + 1300,
       );
