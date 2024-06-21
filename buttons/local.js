@@ -64,7 +64,7 @@ module.exports = {
     }
 
     if (!u || !u?.get("IP"))
-      return `Sorry, I couldn't lookup your location. This appears to be an issue on our side. Tell an admin that the bot may not have a directory.`;
+      return `Sorry, I couldn't lookup your location. This appears to be an issue on our side. Tell an admin that Toriel or Arcadius may have failed to record user information.`;
 
     var locations = [];
     const channels = await prisma.channel.findMany({
