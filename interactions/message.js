@@ -102,7 +102,7 @@ module.exports = ({ app, client }) => {
                 type: "section",
                 text: {
                   type: "mrkdwn",
-                  text: newText.replaceAll(":boom:", ""),
+                  text: newText.replaceAll(" :boom:", ""),
                 },
               },
               {

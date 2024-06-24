@@ -24,7 +24,8 @@ module.exports = {
       .filter(
         (message) =>
           !message.channel.is_private &&
-          !utils.blockedChannels.includes(message.channel.id),
+          !utils.blockedChannels.includes(message.channel.id) &&
+          message.text,
       )
       .reduce((acc, message) => {
         let thread_ts = new URL(message.permalink).searchParams.get(
