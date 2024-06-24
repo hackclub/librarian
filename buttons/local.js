@@ -11,11 +11,11 @@ async function lookupCity(lat, lon) {
   const response = await (
     await fetch(
       "https://nominatim.openstreetmap.org/reverse?" +
-        new URLSearchParams({
-          lat,
-          lon,
-          format: "jsonv2",
-        }),
+      new URLSearchParams({
+        lat,
+        lon,
+        format: "jsonv2",
+      }),
     )
   ).json();
   if (response.error) return "Unknown city";
@@ -37,10 +37,8 @@ module.exports = {
       return `Sorry, I couldn't lookup your location. This appears to be an issue on our side. Tell an admin that the bot may not have been installed with the \`users:read.email\` scope.`;
     const tableIds = process.env.AIRTABLE_TABLES.split(",");
     var u = null;
-    console.log("sus 2");
 
     for (const tableId of tableIds) {
-      console.log("checkpoint main");
       const table = await base(tableId)
         .select({
           filterByFormula:
@@ -49,7 +47,6 @@ module.exports = {
               : `fldFDUVB1h83LchKg = "${user.user.profile.email}"`,
         })
         .all();
-      console.log("checkpoint main3");
 
       u = table.find(
         (record) =>
@@ -57,8 +54,6 @@ module.exports = {
           record.get("Email Address") == user.user.profile.email,
       );
       if (u) {
-        console.log("break");
-        console.log(u);
         break;
       }
     }
@@ -85,7 +80,7 @@ module.exports = {
 
     channels.forEach((channel) => {
       if (!channel.lat || !channel.lon || channel.optout) return;
-      const distance = geolib.getDistance(
+      const distance = geolib.getPreciseDistance(
         {
           latitude: channel.lat,
           longitude: channel.lon,
@@ -101,9 +96,13 @@ module.exports = {
         id: channel.id,
       });
     });
-    locations = locations
+    var filter = locations
       .sort((a, b) => a.km - b.km)
-      .filter((a) => a.mi <= 350);
+      .filter((a) => a.mi <= 350)
+    if (filter.length > 2) locations = filter
+    else locations = locations
+      .sort((a, b) => a.km - b.km).slice(0, 3)
+
 
     var text = !userRecord
       ? `I assumed you live in ${await lookupCity(location[0], location[1])} based on information based the IP address of when you joined Hack Club. If it's not correct, please set it manually using /setuserlocation [location]. Here are some channels with people near you:\n\n`
