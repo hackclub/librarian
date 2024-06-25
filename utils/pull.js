@@ -6,8 +6,9 @@ const fs = require("node:fs");
  */
 module.exports = async function ({ app, client }) {
   var text = "";
-  let sPromises = fs
-    .readdirSync("./sections")
+  var sFiles = fs
+  .readdirSync("./sections")
+  let sPromises = sFiles
     .filter((str) => str.endsWith(".js"))
     .sort()
     .map(async (fn) => {
