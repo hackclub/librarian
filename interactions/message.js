@@ -30,15 +30,9 @@ module.exports = ({ app, client }) => {
         `Latest message: (in <#${message.channel}>) ${pms(Date.now() - Math.floor(parseInt(message.ts) * 1000))} ago`,
       );
 
-      newText = newText
-        .split("\n")
-        .map((ln) => {
-          return ln.replaceAll(
-            `<#${body.event.channel}>`,
-            `<#${body.event.channel}> :boom:`,
-          );
-        })
-        .join("\n");
+      newText = newText.replaceAll( `<#${body.event.channel}>`,
+      `<#${body.event.channel}> :boom:`)
+
       var subBlocks = [];
       let bPromises = fs
         .readdirSync("./buttons")
