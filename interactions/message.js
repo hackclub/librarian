@@ -115,7 +115,7 @@ module.exports = ({ app, client }) => {
       } catch (e) {}
       await client.set(
         `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
-        Date.now() + 1300,
+        Date.now() + 2000,
       );
     }
   });
