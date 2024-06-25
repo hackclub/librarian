@@ -41,9 +41,10 @@ Array.prototype.random = function () {
   await require("./utils/pull")({ app, client });
   setInterval(async function () {
     await require("./utils/pull")({ app, client });
-  }, 1000 * 30);
-  await require("./utils/joinall")({ app, client });
-
+  }, 1000 * 5);
+  setInterval(async function () {
+    await require("./utils/joinall")({ app, client });
+  }, 1000 * 60 * 60 * 12)
   console.log("Librarian has started.");
   await app.start(process.env.PORT || 3000);
   require("./interactions/channel_created")({ app, client });

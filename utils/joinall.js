@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
  */
 module.exports = async function ({ app, client }) {
   async function rake(cursor) {
-    if (process.env.JOIN_ALL_CHANNELS !== "abc") return;
     const convos = await app.client.conversations.list({
       limit: 999,
       cursor,

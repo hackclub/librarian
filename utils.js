@@ -29,7 +29,7 @@ module.exports = {
     "C016DEDUL87"
   ],
   queries: {
-    topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
-    topChannels: `-is:dm -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
+    topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
+    topChannels: `-is:dm -in:#arcade -in:#arcade-help -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
   },
 };
