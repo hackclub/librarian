@@ -29,7 +29,7 @@ module.exports = {
       }, {});
     const sortedChannels = Object.keys(channels).sort(
       (a, b) => channels[b] - channels[a],
-    );
+    ).slice(0, 10)
     var text = `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages.messages.matches[0].channel.id}>) ${pms(Date.now() - Math.floor(messages.messages.matches[0].ts * 1000))} ago\n\n`;
     sortedChannels.forEach((channel) => {
       text += `- <#${channel}>\n`;
