@@ -6,14 +6,26 @@ module.exports = {
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */
-  render: async function ({ app }) {
-    let messages = await app.client.search.messages({
-      query: utils.queries.topChannels,
-      sort: "timestamp",
-      sort_dir: "desc",
-      count: 100,
-      token: process.env.SLACK_USER_TOKEN,
-    });
+  render: async function ({ app, client }) {
+    var messages = null
+    const messageRecentTs = await client.get(process.env.INSTANCE_ID || "production" + ".messageRecentTs")
+    if (await client.exists(process.env.INSTANCE_ID || "production" + ".messageRecentTs") && messageRecentTs > Date.now()) {
+      messages = (await client.get(process.env.INSTANCE_ID || "production" + ".messageRecent")) || {
+        messages: {
+          matches: []
+        }
+      }
+    } else {
+      messages = await app.client.search.messages({
+        query: utils.queries.topChannels,
+        sort: "timestamp",
+        sort_dir: "desc",
+        count: 100,
+        token: process.env.SLACK_USER_TOKEN,
+      });
+      await client.set(process.env.INSTANCE_ID || "production" + ".messageRecent", JSON.stringify(messages))
+      await client.set(process.env.INSTANCE_ID || "production" + ".messageRecentTs", Date.now + 6200)
+    }
     const channels = messages.messages.matches
       .filter(
         (match) =>

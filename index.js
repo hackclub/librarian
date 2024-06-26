@@ -41,7 +41,7 @@ Array.prototype.random = function () {
   await require("./utils/pull")({ app, client });
   setInterval(async function () {
     await require("./utils/pull")({ app, client });
-  }, 1000 * 5);
+  }, 1000 * 7);
   setInterval(async function () {
     await require("./utils/joinall")({ app, client });
   }, 1000 * 60 * 60 * 12)

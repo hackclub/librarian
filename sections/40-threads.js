@@ -5,20 +5,32 @@ module.exports = {
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */
-  render: async function ({ app }) {
+  render: async function ({ app, client }) {
     function reduceText(text, link) {
       if (text.length <= 160) return text;
       if (text.split("\n").length > 1)
         return text.split("\n")[0].slice(0, 160) + `<${link}|[...]>`;
       return text.slice(0, 160) + `<${link}|[...]>`;
     }
-    const messages = await app.client.search.messages({
-      query: utils.queries.topThreads,
-      sort: "timestamp",
-      sort_dir: "desc",
-      count: 100,
-      token: process.env.SLACK_USER_TOKEN,
-    });
+    const messageThreadTs = await client.get(process.env.INSTANCE_ID || "production" + ".messageThreadTs")
+
+    if (await client.exists(process.env.INSTANCE_ID || "production" + ".messageThreadTs") && messageThreadTs > Date.now()) {
+      messages = (await client.get("messageThread")) || {
+        messages: {
+          matches: []
+        }
+      }
+    } else {
+      messages = await app.client.search.messages({
+        query: utils.queries.topChannels,
+        sort: "timestamp",
+        sort_dir: "desc",
+        count: 100,
+        token: process.env.SLACK_USER_TOKEN,
+      });
+      await client.set(process.env.INSTANCE_ID || "production" + ".messageThread", JSON.stringify(messages))
+      await client.set(process.env.INSTANCE_ID || "production" + ".messageThreadTs", Date.now + 6200)
+    }
     var text = "";
     let uniqueMessages = messages.messages.matches
       .filter(
