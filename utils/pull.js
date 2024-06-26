@@ -55,6 +55,7 @@ module.exports = async function ({ app, client }) {
 
     await updateMessage({
       app,
+      client,
       text: `New directory update ${new Date()}`,
       blocks: [
         {

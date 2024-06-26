@@ -68,6 +68,7 @@ module.exports = ({ app, client }) => {
         try {
           await updateMessage({
             app,
+            client,
             text: `New directory update ${new Date()}`,
             blocks: [
               {
@@ -87,6 +88,7 @@ module.exports = ({ app, client }) => {
           setTimeout(async function () {
             await updateMessage({
               app,
+              client,
               text: `New directory update ${new Date()}`,
               blocks: [
                 {
