@@ -68,6 +68,7 @@ module.exports = {
         .split("\n")
         .map((str) => "> " + str)
         .join("\n")
+        .replaceAll(/<@[^|]+\|([^>]+)>/g, "[$1]")
         .replaceAll(
           "@",
           "​@",
