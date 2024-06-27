@@ -47,9 +47,8 @@ module.exports = {
           message.channel.is_private ||
           !message.channel.is_channel ||
           message.is_mpim
-        )
-          acc;
-        if (!acc.find((item) => item.thread_ts === thread_ts)) {
+        ) return acc
+        if (!acc.find((item) => item.thread_ts === thread_ts) && !acc.find((item) => item.channel.id === message.channel.id)) {
           acc.push({
             thread_ts: thread_ts,
             permalink: message.permalink,
