@@ -32,4 +32,8 @@ module.exports = {
     topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
     topChannels: `-is:dm -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
   },
+  channelEmojis : {
+    'C056AMWSFKJ': '⚙️', // Example mapping
+    // Add more channel to emoji mappings here
+  }
 };

@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { App } = require("@slack/bolt");
 const { createClient } = require("redis");
+const cron = require('node-cron');
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -27,24 +28,23 @@ Array.prototype.random = function () {
   require("./commands/setuserlocation")({ app, client });
 
   // This deletes and sends a new message to bypass the 10 day editing limit
-  setInterval(
-    async function () {
-      await require("./utils/redo")({ app, client });
-    },
-    1000 * 60 * 60 * 12,
-  );
+
   // This runs the same thing on startup
   await require("./utils/redo")({ app, client });
   // app.message functions go here
   await require("./interactions/message")({ app, client });
 
   await require("./utils/pull")({ app, client });
-  setInterval(async function () {
+
+  cron.schedule("0,10,20,30,40,50 * * * * *", async () => {
     await require("./utils/pull")({ app, client });
-  }, 1000 * 7);
-  setInterval(async function () {
+  });
+
+  cron.schedule("0 0,12 * * *", async () => {
+    await require("./utils/redo")({ app, client });
     await require("./utils/joinall")({ app, client });
-  }, 1000 * 60 * 60 * 12)
+  });
+ 
   console.log("Librarian has started.");
   await app.start(process.env.PORT || 3000);
   require("./interactions/channel_created")({ app, client });
