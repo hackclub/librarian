@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
  */
 module.exports = async function ({ app }) {
   app.command("/optout-library", async ({ command, body, ack, respond }) => {
+    await prisma.$connect()
     await ack();
     const channelId = body.channel_id;
     const channel = await app.client.conversations.info({
@@ -15,7 +16,7 @@ module.exports = async function ({ app }) {
     });
     if (command.user_id != channel.channel.creator || !user.user.is_admin)
       return await respond(
-        "Only channel managers and workspace admins can opt a user out.",
+        "Only channel managers and workspace admins can opt a channel out.",
       );
     const channelRecord = await prisma.channel.findFirst({
       where: {
@@ -56,6 +57,6 @@ module.exports = async function ({ app }) {
         channel: channel.channel.id,
       });
 
-    await respond(`${command.text}`);
+    await prisma.$disconnect()
   });
 };

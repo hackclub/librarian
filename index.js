@@ -6,7 +6,7 @@ const cron = require("node-cron");
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  socketMode: !Boolean(process.env.PORT),
+  socketMode: process.env.PORT ? false : true,
   appToken: process.env.SLACK_APP_TOKEN,
   port: process.env.PORT,
 });
@@ -23,9 +23,10 @@ Array.prototype.random = function () {
 
   // Load commands
 
-  require("./commands/optout")({ app, client });
-  require("./commands/setlocation")({ app, client });
-  require("./commands/setuserlocation")({ app, client });
+  await require("./commands/optout")({ app, client });
+  await require("./commands/setlocation")({ app, client });
+  await require("./commands/setuserlocation")({ app, client });
+  await require("./commands/setemoji")({ app, client });
 
   // This deletes and sends a new message to bypass the 10 day editing limit
 

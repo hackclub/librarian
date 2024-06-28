@@ -1,12 +1,17 @@
+
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-/**
- * @param {{app: import('@slack/bolt').App}} param1
- */
+const emojis = require("./emojis");
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
 module.exports = async function ({ app, client }) {
+  const { PrismaClient } = require("@prisma/client");
+  const prisma = new PrismaClient();
+  await prisma.$connect()
+
   async function rake(cursor) {
     const convos = await app.client.conversations.list({
       limit: 999,
@@ -31,6 +36,14 @@ module.exports = async function ({ app, client }) {
           await app.client.conversations.join({
             channel: channel.id,
           });
+          if (!channelRecord){
+            await prisma.channel.create({
+              data:{
+                id: channel.id,
+                emoji: emojis.random()
+              }
+            })
+          }
           console.log(`Joined ${channel.name_normalized} (${channel.id})`);
           setTimeout(resolve, 1200);
         } catch (e) {
@@ -45,7 +58,11 @@ module.exports = async function ({ app, client }) {
       setTimeout(async function () {
         await rake(convos.response_metadata.next_cursor);
       }, 3000);
-    else console.log("Finished joining all channels");
+    else {
+      console.log("Finished joining all channels");
+      await prisma.$disconnect()
+    }
+
   }
   rake();
 };

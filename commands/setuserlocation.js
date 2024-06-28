@@ -1,11 +1,13 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+
 
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
 module.exports = async function ({ app }) {
+  const { PrismaClient } = require("@prisma/client");
+  const prisma = new PrismaClient();
   app.command("/setuserlocation", async ({ command, body, ack, respond }) => {
+    await prisma.$connect()
     await ack();
     if (!command.text)
       return await respond(
@@ -20,10 +22,10 @@ module.exports = async function ({ app }) {
     var locations = await (
       await fetch(
         `https://nominatim.openstreetmap.org/search?` +
-          new URLSearchParams({
-            q: command.text.trim(),
-            format: "jsonv2",
-          }),
+        new URLSearchParams({
+          q: command.text.trim(),
+          format: "jsonv2",
+        }),
       )
     ).json();
     if (!locations.length)
@@ -54,5 +56,6 @@ module.exports = async function ({ app }) {
       user: command.user_id,
       text: `Set your user location to \`${display_name}\`.`,
     });
+    await prisma.$disconnect()
   });
 };

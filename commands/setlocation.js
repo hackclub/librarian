@@ -1,11 +1,13 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+
 
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
 module.exports = async function ({ app }) {
+  const { PrismaClient } = require("@prisma/client");
+  const prisma = new PrismaClient();
   app.command("/setlocation", async ({ command, body, ack, respond }) => {
+    await prisma.$connect()
     await ack();
     if (!command.text)
       return await respond(
@@ -30,10 +32,10 @@ module.exports = async function ({ app }) {
     var locations = await (
       await fetch(
         `https://nominatim.openstreetmap.org/search?` +
-          new URLSearchParams({
-            q: command.text.trim(),
-            format: "jsonv2",
-          }),
+        new URLSearchParams({
+          q: command.text.trim(),
+          format: "jsonv2",
+        }),
       )
     ).json();
     if (!channel.channel.is_member)
@@ -41,7 +43,7 @@ module.exports = async function ({ app }) {
         await app.client.conversations.join({
           channel: channel.channel.id,
         });
-      } catch (e) {}
+      } catch (e) { }
     if (!locations.length)
       return await respond(
         "No locations found. If this keeps failing, please add it to OpenStreetMaps.",
@@ -75,5 +77,6 @@ module.exports = async function ({ app }) {
       user: command.user_id,
       text: `Set your channel location to \`${display_name}\`. Others near you will be able to discover your channel via their location.`,
     });
+    await prisma.$disconnect()
   });
 };
