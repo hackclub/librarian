@@ -6,7 +6,7 @@ const emojis = require("../utils/emojis")
 module.exports = async function ({ app }) {
     const { PrismaClient } = require("@prisma/client");
     const prisma = new PrismaClient();
-    app.command("/dev-setemoji", async ({ command, body, ack, respond }) => {
+    app.command("/setemoji", async ({ command, body, ack, respond }) => {
         await prisma.$connect()
         await ack();
         if (!command.text)
