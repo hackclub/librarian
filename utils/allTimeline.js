@@ -1,6 +1,7 @@
-const { channelEmojis } = require("../utils");
 const emojis = require("./emojis");
-module.exports = function generateFullTimeline(messages) {
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+module.exports = async function generateFullTimeline(messages) {
   const intervalMessages = {};
   messages.forEach((message) => {
     const timestamp = parseFloat(message.ts);
@@ -19,9 +20,19 @@ module.exports = function generateFullTimeline(messages) {
 
   for (let time = startTime; time <= endTime; time += 10) {
     if (intervalMessages[time]) {
-      intervalMessages[time].forEach((channelId) => {
-        output += channelEmojis[channelId] || "💥";
-      });
+      for (const channelId of intervalMessages[time]) {
+        var emoji = "💥"
+        const channelRecord = await prisma.channel.findFirst({
+          where: {
+            id: channelId
+          }
+        })
+        if (!channelRecord || !channelRecord.emoji) {
+          output += emoji
+          continue
+        }
+        output += channelRecord.emoji
+    }
     } else {
       output += "-";
     }

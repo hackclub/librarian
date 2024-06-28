@@ -2,7 +2,9 @@ const pms = require("pretty-ms");
 const utils = require("../utils");
 const util = require("util");
 const generateFullTimeline = require("../utils/allTimeline");
-//const timeline = require("../utils/timeline.disabled")
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+//const timeline = require("../utils/timeline.disabled.js")
 module.exports = {
   title: "🆕 Most Recent Activity",
   description: "This gets the most recently updates channels",
@@ -36,14 +38,24 @@ module.exports = {
       .slice(0, 10);
     let text = await Promise.all(
       sortedChannels.map(async (channel) => {
+        const channelRecord = await prisma.channel.findFirst({
+          where: {
+            id: channel
+          }
+        })
+        if (!channelRecord || !channelRecord.emoji) {
+          return `- <#${channel}>\n`;
+        } else {
+          return `- ${channelRecord.emoji} <#${channel}>\n`;
+
+        }
         // (${await timeline({ app, channel })})
-        return `- <#${channel}>\n`;
       }),
     ).then((texts) => texts.join(""));
     return (
       `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages.messages.matches[0].channel.id}>) ${pms(Date.now() - Math.floor(messages.messages.matches[0].ts * 1000))} ago
 
-${generateFullTimeline(channels)}
+${await generateFullTimeline(channels)}
 
 ` + text
     );

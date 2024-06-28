@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const emojis = require("./utils/emojis");
+const emojis = require("../utils/emojis");
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
