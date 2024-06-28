@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { App } = require("@slack/bolt");
 const { createClient } = require("redis");
-const cron = require('node-cron');
+const cron = require("node-cron");
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -44,7 +44,7 @@ Array.prototype.random = function () {
     await require("./utils/redo")({ app, client });
     await require("./utils/joinall")({ app, client });
   });
- 
+
   console.log("Librarian has started.");
   await app.start(process.env.PORT || 3000);
   require("./interactions/channel_created")({ app, client });

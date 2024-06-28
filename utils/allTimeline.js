@@ -1,8 +1,8 @@
-const {channelEmojis} = require("../utils")
+const { channelEmojis } = require("../utils");
+const emojis = require("./emojis");
 module.exports = function generateFullTimeline(messages) {
-
   const intervalMessages = {};
-  messages.forEach(message => {
+  messages.forEach((message) => {
     const timestamp = parseFloat(message.ts);
     const interval = Math.floor(timestamp / 10) * 10;
 
@@ -15,17 +15,21 @@ module.exports = function generateFullTimeline(messages) {
 
   const startTime = Math.min(...Object.keys(intervalMessages).map(Number));
   const endTime = Math.max(...Object.keys(intervalMessages).map(Number));
-  let output = '';
+  let output = "";
 
   for (let time = startTime; time <= endTime; time += 10) {
     if (intervalMessages[time]) {
-      intervalMessages[time].forEach(channelId => {
-        output += channelEmojis[channelId] || '💥';
+      intervalMessages[time].forEach((channelId) => {
+        output += channelEmojis[channelId] || "💥";
       });
     } else {
-      output += '-';
+      output += "-";
     }
   }
 
-return output.slice(0,20)
-}
+  let chars = [...output];
+  chars = chars
+    .map((char) => (emojis.includes(char) || char == "-" ? char : ""))
+    .slice(chars.length - 20);
+  return chars.join("");
+};

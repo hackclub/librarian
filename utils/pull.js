@@ -1,21 +1,20 @@
 // This pulls all files in sections/*
 // This allows directory to stay modular.
 const fs = require("node:fs");
-const updateMessage = require("../utils/updateMessage")
+const updateMessage = require("../utils/updateMessage");
 
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
 module.exports = async function ({ app, client }) {
   var text = "";
-  var sFiles = fs
-  .readdirSync("./sections")
+  var sFiles = fs.readdirSync("./sections");
   let sFilesSorted = sFiles.filter((str) => str.endsWith(".js")).sort();
 
   for (const fn of sFilesSorted) {
-      const section = await require(`../sections/${fn}`);
-      const rend = (await section.render({ app, client })).trim();
-      text += `${section.title}\n\n${rend}\n\n════════════════════════════════════\n`;
+    const section = await require(`../sections/${fn}`);
+    const rend = (await section.render({ app, client })).trim();
+    text += `${section.title}\n\n${rend}\n\n════════════════════════════════════\n`;
   }
   var subBlocks = [];
   let bPromises = fs
@@ -41,7 +40,11 @@ module.exports = async function ({ app, client }) {
         await app.client.chat.postEphemeral({
           channel: body.channel.id,
           user: body.user.id,
-          text: await require(body.actions[0].value).render({ app, body, client }),
+          text: await require(body.actions[0].value).render({
+            app,
+            body,
+            client,
+          }),
         });
       });
     });
@@ -52,7 +55,6 @@ module.exports = async function ({ app, client }) {
   client.set(`${process.env.INSTANCE_ID || "production"}.messageText`, text);
 
   try {
-
     await updateMessage({
       app,
       client,
@@ -69,8 +71,8 @@ module.exports = async function ({ app, client }) {
           type: "actions",
           elements: subBlocks,
         },
-      ], priority: "high"
-    })
-
+      ],
+      priority: "high",
+    });
   } catch (e) {}
 };

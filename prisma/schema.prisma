@@ -14,6 +14,7 @@ model Channel {
   lon       String?
   optout    Boolean  @default(false)
   locked    Boolean  @default(false)
+  emoji     String?
 }
 
 model User {

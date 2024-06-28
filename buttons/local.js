@@ -11,11 +11,11 @@ async function lookupCity(lat, lon) {
   const response = await (
     await fetch(
       "https://nominatim.openstreetmap.org/reverse?" +
-      new URLSearchParams({
-        lat,
-        lon,
-        format: "jsonv2",
-      }),
+        new URLSearchParams({
+          lat,
+          lon,
+          format: "jsonv2",
+        }),
     )
   ).json();
   if (response.error) return "Unknown city";
@@ -98,11 +98,9 @@ module.exports = {
     });
     var filter = locations
       .sort((a, b) => a.km - b.km)
-      .filter((a) => a.mi <= 350)
-    if (filter.length > 2) locations = filter
-    else locations = locations
-      .sort((a, b) => a.km - b.km).slice(0, 3)
-
+      .filter((a) => a.mi <= 350);
+    if (filter.length > 2) locations = filter;
+    else locations = locations.sort((a, b) => a.km - b.km).slice(0, 3);
 
     var text = !userRecord
       ? `I assumed you live in ${await lookupCity(location[0], location[1])} based on information based the IP address of when you joined Hack Club. If it's not correct, please set it manually using /setuserlocation [location]. Here are some channels with people near you:\n\n`

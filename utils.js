@@ -11,6 +11,7 @@ module.exports = {
     "C01T5J557AA", // #ssh-chat-bridge (banned users use this)
     "C02GK2TVAVB", // #temp-email
     "C078Q8PBD4G", // #library
+    "C029E8FARRC", // #minecraft-bridge
 
     // Here's a list of bot channels/spammy channels
     // This goes here in order to prevent the indexing of artificially inflated rankings
@@ -26,14 +27,13 @@ module.exports = {
     "C02T3CU03T3",
     "C02HSS9Q3D5",
     "C02B7CWDD0E",
-    "C016DEDUL87"
+    "C016DEDUL87",
   ],
   queries: {
     topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
     topChannels: `-is:dm -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks`,
   },
-  channelEmojis : {
-    'C056AMWSFKJ': '⚙️', // Example mapping
-    // Add more channel to emoji mappings here
-  }
+  channelEmojis: {
+    C056AMWSFKJ: "⚙️",
+  },
 };

@@ -1,3 +1,11 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+const emojis = require("./utils/emojis");
+
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
 module.exports = ({ app, client }) => {
   /**
    * @param {{app: import('@slack/bolt').App}} param1
@@ -7,6 +15,14 @@ module.exports = ({ app, client }) => {
     const userId = event.channel.creator;
     await app.client.conversations.join({
       channel: channelId,
+    });
+    const emoji = emojis.random();
+
+    await prisma.channel.create({
+      data: {
+        id: channelId,
+        emoji: emoji,
+      },
     });
     await app.client.chat.postEphemeral({
       channel: channelId,
