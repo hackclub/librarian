@@ -1,4 +1,3 @@
-
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
@@ -10,7 +9,7 @@ Array.prototype.random = function () {
 module.exports = async function ({ app, client }) {
   const { PrismaClient } = require("@prisma/client");
   const prisma = new PrismaClient();
-  await prisma.$connect()
+  await prisma.$connect();
 
   async function rake(cursor) {
     const convos = await app.client.conversations.list({
@@ -36,13 +35,13 @@ module.exports = async function ({ app, client }) {
           await app.client.conversations.join({
             channel: channel.id,
           });
-          if (!channelRecord){
+          if (!channelRecord) {
             await prisma.channel.create({
-              data:{
+              data: {
                 id: channel.id,
-                emoji: emojis.random()
-              }
-            })
+                emoji: emojis.random(),
+              },
+            });
           }
           console.log(`Joined ${channel.name_normalized} (${channel.id})`);
           setTimeout(resolve, 1200);
@@ -60,9 +59,8 @@ module.exports = async function ({ app, client }) {
       }, 3000);
     else {
       console.log("Finished joining all channels");
-      await prisma.$disconnect()
+      await prisma.$disconnect();
     }
-
   }
   rake();
 };

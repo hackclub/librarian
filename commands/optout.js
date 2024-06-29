@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
  */
 module.exports = async function ({ app }) {
   app.command("/optout-library", async ({ command, body, ack, respond }) => {
-    await prisma.$connect()
+    await prisma.$connect();
     await ack();
     const channelId = body.channel_id;
     const channel = await app.client.conversations.info({
@@ -57,6 +57,6 @@ module.exports = async function ({ app }) {
         channel: channel.channel.id,
       });
 
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   });
 };

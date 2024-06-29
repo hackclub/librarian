@@ -13,7 +13,7 @@ module.exports = {
   render: async function ({ app, client }) {
     const { PrismaClient } = require("@prisma/client");
     const prisma = new PrismaClient();
-    await prisma.$connect()
+    await prisma.$connect();
     var messages = await app.client.search.messages({
       query: utils.queries.topChannels,
       sort: "timestamp",
@@ -42,14 +42,13 @@ module.exports = {
       sortedChannels.map(async (channel) => {
         const channelRecord = await prisma.channel.findFirst({
           where: {
-            id: channel
-          }
-        })
+            id: channel,
+          },
+        });
         if (!channelRecord || !channelRecord.emoji) {
           return `- <#${channel}>\n`;
         } else {
           return `- ${channelRecord.emoji} <#${channel}>\n`;
-
         }
         // (${await timeline({ app, channel })})
       }),
@@ -63,6 +62,5 @@ ${await generateFullTimeline(channels)}
 
 ` + text
     );
-
   },
 };

@@ -21,10 +21,7 @@ module.exports = async function ({ app, text, blocks, priority, client }) {
   await app.client.chat.update({
     channel: process.env.SLACK_CHANNEL,
     ts: messageId,
-    text: text.replaceAll(
-        "@",
-        "​@",
-      ),
+    text: text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, ""),
     blocks,
   });
   await client.set(
