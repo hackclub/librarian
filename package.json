@@ -7,7 +7,7 @@
     "start": "node .",
     "fmt": "npx prettier --write '**/*.js'",
     "dev": "npx nodemon .",
-    "heroku-postbuild":"cd node_modules/geoip-lite2 && yarn updatedb license_key=$MAXMIND_UPDATE_KEY"
+    "old-heroku-postbuild":"cd node_modules/geoip-lite2 && yarn updatedb license_key=$MAXMIND_UPDATE_KEY"
   },
   "dependencies": {
     "@prisma/client": "5.15.0",
