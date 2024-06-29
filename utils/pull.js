@@ -64,7 +64,7 @@ module.exports = async function ({ app, client }) {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: text,
+            text: text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, ""),
           },
         },
         {
