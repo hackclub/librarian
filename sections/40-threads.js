@@ -65,6 +65,6 @@ module.exports = {
           "​@",
         )}\nFrom <#${msg.channel}> (<${msg.permalink}|Source>)\n\n`;
     });
-    return text;
+    return text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "");
   },
 };

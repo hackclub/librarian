@@ -60,7 +60,7 @@ module.exports = {
 
 ${await generateFullTimeline(channels)}
 
-` + text
+` + text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "")
     );
   },
 };
