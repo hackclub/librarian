@@ -1,6 +1,8 @@
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
+const getChannelManagers = require("../utils/channelManagers");
+
 module.exports = async function ({ app }) {
   const { PrismaClient } = require("@prisma/client");
   const prisma = new PrismaClient();
@@ -12,13 +14,14 @@ module.exports = async function ({ app }) {
         "Please provide a location. I.e. /setlocation Atlanta, Georgia, USA",
       );
     const channelId = body.channel_id;
+    const channelManagers = await getChannelManagers(body.channel_id);
     const channel = await app.client.conversations.info({
       channel: body.channel_id,
     });
     const user = await app.client.users.info({
       user: command.user_id,
     });
-    if (command.user_id != channel.channel.creator && !user.user.is_admin)
+    if (!channelManagers.includes(command.user_id) && !user.user.is_admin)
       return await respond(
         "Only channel managers and workspace admins can opt a user out.",
       );

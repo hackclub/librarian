@@ -1170,4 +1170,6 @@ module.exports = [
   "🕥",
   "🕦",
   "🕧",
-].map(emoji=>emoji.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, ""))
+].map((emoji) =>
+  emoji.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, ""),
+);

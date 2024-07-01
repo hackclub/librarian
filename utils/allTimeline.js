@@ -29,10 +29,10 @@ module.exports = async function generateFullTimeline(messages) {
           },
         });
         if (!channelRecord || !channelRecord.emoji) {
-          output += emoji;
+          output += `<https://hackclub.slack.com/archives/${channelId}|${emoji}>`;
           continue;
         }
-        output += channelRecord.emoji + ",";
+        output += `<https://hackclub.slack.com/archives/${channelId}|${channelRecord.emoji}>,`;
       }
     } else {
       output += "-,";
@@ -44,5 +44,9 @@ module.exports = async function generateFullTimeline(messages) {
     .map((char) => (emojis.includes(char) || char == "-" ? char : ""))
     .slice(chars.length - 40, chars.length);
   await prisma.$disconnect();
-  return chars.join(",").replaceAll(",", "").replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "");
+  return chars
+    .join(",")
+    .replaceAll(",", "")
+    .replaceAll("@", "​@")
+    .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "");
 };
