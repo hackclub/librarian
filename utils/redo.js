@@ -24,21 +24,25 @@ module.exports = async function ({ app, client }) {
         }),
     ),
   );
- await app.client.chat.postMessage({
-    channel: process.env.SLACK_CHANNEL,
-    text: "```\n"+figlet.textSync("Library", {
-      horizontalLayout: "default",
-      verticalLayout: "default",
-      width: 60,
-      whitespaceBreak: true,
-    })+"\n```",
-  });
-  const tmesg = await app.client.chat.postMessage({
-    channel: process.env.SLACK_CHANNEL,
-    text: ":spin-loading: Loading library",
-  });
-  await client.set(
-    `${process.env.INSTANCE_ID || "production"}.messageId`,
-    tmesg.ts,
-  );
+  const file = await Buffer.from(
+    await (await fetch("https://cloud-6frqejd8v-hack-club-bot.vercel.app/0hack-club-anime.png")).arrayBuffer()
+  )
+  await app.client.files.uploadV2({
+    channel_id: process.env.SLACK_CHANNEL,
+    file: file,
+    filename: 'welcome to the hack club channel library!.png',
+  })
+
+  setTimeout(async function(){
+
+    const tmesg = await app.client.chat.postMessage({
+      channel: process.env.SLACK_CHANNEL,
+      text: ":spin-loading: Loading library",
+    });
+    await client.set(
+      `${process.env.INSTANCE_ID || "production"}.messageId`,
+      tmesg.ts,
+    );
+  },2000)
+
 };
