@@ -1,52 +1,52 @@
 const emojis = require("./emojis");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-module.exports = async function generateFullTimeline(messages) {
-  const intervalMessages = {};
-  messages.forEach((message) => {
-    const timestamp = parseFloat(message.ts);
-    const interval = Math.floor(timestamp / 10) * 10;
 
-    if (!intervalMessages[interval]) {
-      intervalMessages[interval] = new Set();
+
+
+
+async function getChannelEmoji(channelId) {
+  const channel = await prisma.channel.findFirst({
+    where: {
+      id: channelId
     }
+  })
+  if (!channel || !channel.emoji) return "💥"
+  return channel.emoji
+}
 
-    intervalMessages[interval].add(message.channel.id);
-  });
 
-  const startTime = Math.min(...Object.keys(intervalMessages).map(Number));
-  const endTime = Math.max(...Object.keys(intervalMessages).map(Number));
-  let output = "";
-  await prisma.$connect();
+async function generateMessageString(messages, currentTime) {
+  const interval = 10; 
+  const secondsInDay = 86400; 
+  const intervalsInDay = secondsInDay / interval;
 
-  for (let time = startTime; time <= endTime; time += 10) {
-    if (intervalMessages[time]) {
-      for (const channelId of intervalMessages[time]) {
-        var emoji = "💥,";
-        const channelRecord = await prisma.channel.findFirst({
-          where: {
-            id: channelId,
-          },
-        });
-        if (!channelRecord || !channelRecord.emoji) {
-          output += `<https://hackclub.slack.com/archives/${channelId}|${emoji}>`;
-          continue;
-        }
-        output += `<https://hackclub.slack.com/archives/${channelId}|${channelRecord.emoji}>,`;
-      }
-    } else {
-      output += "-,";
+  let messageString = '';
+  const timeToEmojiMap = {};
+
+  for (const message of messages) {
+    const messageTime = parseInt(message.ts.split('.')[0], 10); 
+    const timeDiff = currentTime - messageTime;
+    const intervalIndex = Math.floor(timeDiff / interval);
+
+    if (intervalIndex < intervalsInDay) {
+      const emoji = await getChannelEmoji(message.channel.id);
+      timeToEmojiMap[intervalIndex] = { emoji, permalink: message.permalink };
     }
   }
 
-  let chars = output.split(",");
-  chars = chars
-    .map((char) => (emojis.includes(char) || char == "-" ? char : ""))
-    .slice(chars.length - 40, chars.length);
-  await prisma.$disconnect();
-  return chars
-    .join(",")
-    .replaceAll(",", "")
-    .replaceAll("@", "​@")
-    .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "");
-};
+  for (let i = 0; i < intervalsInDay; i++) {
+    if (timeToEmojiMap[i]) {
+      const { emoji, permalink } = timeToEmojiMap[i];
+      messageString += `<${permalink}|${emoji}>,`;
+    } else {
+      messageString += '-,';
+    }
+  }
+
+  return messageString.split(",").slice(0, 10).join(",").replaceAll(",", "");
+}
+
+
+module.exports = generateMessageString
+

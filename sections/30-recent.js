@@ -1,7 +1,7 @@
 const pms = require("pretty-ms");
 const utils = require("../utils");
 const util = require("util");
-const generateFullTimeline = require("../utils/allTimeline");
+const generateMessageString = require("../utils/allTimeline");
 
 //const timeline = require("../utils/timeline.disabled.js")
 module.exports = {
@@ -54,11 +54,10 @@ module.exports = {
       }),
     ).then((texts) => texts.join(""));
     await prisma.$disconnect();
-
     return (
       `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages.messages.matches[0].channel.id}>) ${pms(Date.now() - Math.floor(messages.messages.matches[0].ts * 1000))} ago
 
-${await generateFullTimeline(channels)}
+${await generateMessageString(channels, Math.floor(Date.now() / 1000))}
 
 ` + text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "")
     );

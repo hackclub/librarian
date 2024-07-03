@@ -3,6 +3,7 @@
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
+const figlet = require("figlet");
 module.exports = async function ({ app, client }) {
   const data = await app.client.conversations.history({
     channel: process.env.SLACK_CHANNEL,
@@ -23,6 +24,15 @@ module.exports = async function ({ app, client }) {
         }),
     ),
   );
+ await app.client.chat.postMessage({
+    channel: process.env.SLACK_CHANNEL,
+    text: "```\n"+figlet.textSync("Library", {
+      horizontalLayout: "default",
+      verticalLayout: "default",
+      width: 60,
+      whitespaceBreak: true,
+    })+"\n```",
+  });
   const tmesg = await app.client.chat.postMessage({
     channel: process.env.SLACK_CHANNEL,
     text: ":spin-loading: Loading library",

@@ -37,7 +37,7 @@ Array.prototype.random = function () {
 
   await require("./utils/pull")({ app, client });
 
-  cron.schedule("0,10,20,30,40,50 * * * * *", async () => {
+  cron.schedule("0,7,14,21,28,35,42,49,56 * * * * *", async () => {
     await require("./utils/pull")({ app, client });
   });
 
