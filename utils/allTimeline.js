@@ -1,11 +1,6 @@
 const emojis = require("./emojis");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 
-
-
-
-async function getChannelEmoji(channelId) {
+async function getChannelEmoji(channelId, prisma) {
   const channel = await prisma.channel.findFirst({
     where: {
       id: channelId
@@ -16,7 +11,7 @@ async function getChannelEmoji(channelId) {
 }
 
 
-async function generateMessageString(messages, currentTime) {
+async function generateMessageString(messages, currentTime, prisma) {
   const interval = 10; 
   const secondsInDay = 86400; 
   const intervalsInDay = secondsInDay / interval;
@@ -30,7 +25,7 @@ async function generateMessageString(messages, currentTime) {
     const intervalIndex = Math.floor(timeDiff / interval);
 
     if (intervalIndex < intervalsInDay) {
-      const emoji = await getChannelEmoji(message.channel.id);
+      const emoji = await getChannelEmoji(message.channel.id, prisma);
       timeToEmojiMap[intervalIndex] = { emoji, permalink: message.permalink };
     }
   }
