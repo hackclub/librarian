@@ -43,6 +43,6 @@ module.exports = async function ({ app, client }) {
       `${process.env.INSTANCE_ID || "production"}.messageId`,
       tmesg.ts,
     );
-  },2000)
+  },5000)
 
 };
