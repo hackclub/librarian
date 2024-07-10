@@ -2,6 +2,8 @@ require("dotenv").config();
 const { App } = require("@slack/bolt");
 const { createClient } = require("redis");
 const cron = require("node-cron");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -23,27 +25,27 @@ Array.prototype.random = function () {
 
   // Load commands
 
-  await require("./commands/optout")({ app, client });
-  await require("./commands/setlocation")({ app, client });
-  await require("./commands/setuserlocation")({ app, client });
-  await require("./commands/setemoji")({ app, client });
+  await require("./commands/optout")({ app, client, prisma });
+  await require("./commands/setlocation")({ app, client, prisma });
+  await require("./commands/setuserlocation")({ app, client, prisma });
+  await require("./commands/setemoji")({ app, client, prisma });
 
   // This deletes and sends a new message to bypass the 10 day editing limit
 
   // This runs the same thing on startup
-  await require("./utils/redo")({ app, client });
+  await require("./utils/redo")({ app, client, prisma });
   // app.message functions go here
-  await require("./interactions/message")({ app, client });
+  await require("./interactions/message")({ app, client, prisma });
 
-  await require("./utils/pull")({ app, client });
+  await require("./utils/pull")({ app, client, prisma });
 
   cron.schedule("0,7,14,21,28,35,42,49,56 * * * * *", async () => {
-    await require("./utils/pull")({ app, client });
+    await require("./utils/pull")({ app, client, prisma });
   });
 
   cron.schedule("0 0,12 * * *", async () => {
-    await require("./utils/redo")({ app, client });
-    await require("./utils/joinall")({ app, client });
+    await require("./utils/redo")({ app, client, prisma });
+    await require("./utils/joinall")({ app, client, prisma });
   });
 
   console.log("Librarian has started.");

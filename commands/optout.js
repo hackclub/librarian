@@ -1,12 +1,10 @@
-const { PrismaClient } = require("@prisma/client");
 const getChannelManagers = require("../utils/channelManagers");
-const prisma = new PrismaClient();
+
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
-module.exports = async function ({ app }) {
+module.exports = async function ({ app, prisma }) {
   app.command("/optout-library", async ({ command, body, ack, respond }) => {
-    await prisma.$connect();
     await ack();
     const channelId = body.channel_id;
     const channel = await app.client.conversations.info({
@@ -59,6 +57,5 @@ module.exports = async function ({ app }) {
         channel: channel.channel.id,
       });
 
-    await prisma.$disconnect();
   });
 };

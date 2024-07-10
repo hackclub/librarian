@@ -6,10 +6,7 @@ Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
 
-module.exports = async function ({ app, client }) {
-  const { PrismaClient } = require("@prisma/client");
-  const prisma = new PrismaClient();
-  await prisma.$connect();
+module.exports = async function ({ app, client, prisma }) {
 
   async function rake(cursor) {
     const convos = await app.client.conversations.list({
@@ -59,7 +56,6 @@ module.exports = async function ({ app, client }) {
       }, 3000);
     else {
       console.log("Finished joining all channels");
-      await prisma.$disconnect();
     }
   }
   rake();

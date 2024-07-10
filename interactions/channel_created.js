@@ -1,12 +1,10 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 const emojis = require("../utils/emojis");
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
 
-module.exports = ({ app, client }) => {
+module.exports = ({ app, client, prisma }) => {
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */

@@ -6,14 +6,14 @@ const updateMessage = require("../utils/updateMessage");
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
-module.exports = async function ({ app, client }) {
+module.exports = async function ({ app, client, prisma }) {
   var text = "";
   var sFiles = fs.readdirSync("./sections");
   let sFilesSorted = sFiles.filter((str) => str.endsWith(".js")).sort();
 
   for (const fn of sFilesSorted) {
     const section = await require(`../sections/${fn}`);
-    const rend = (await section.render({ app, client })).trim();
+    const rend = (await section.render({ app, client, prisma })).trim();
     text += `${section.title}\n\n${rend}\n\n════════════════════════════════════\n`;
   }
   var subBlocks = [];

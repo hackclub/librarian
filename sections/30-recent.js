@@ -10,10 +10,7 @@ module.exports = {
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */
-  render: async function ({ app, client }) {
-    const { PrismaClient } = require("@prisma/client");
-    const prisma = new PrismaClient();
-    await prisma.$connect();
+  render: async function ({ app, client, prisma }) {
     var messages = await app.client.search.messages({
       query: utils.queries.topChannels,
       sort: "timestamp",

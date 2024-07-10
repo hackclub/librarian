@@ -5,7 +5,7 @@ module.exports = {
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */
-  render: async function ({ app, client }) {
+  render: async function ({ app, client, prisma }) {
     function reduceText(text, link) {
       if (text.length <= 160) return text;
       if (text.split("\n").length > 1)

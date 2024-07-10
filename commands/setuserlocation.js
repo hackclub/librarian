@@ -1,9 +1,7 @@
 /**
  * @param {{app: import('@slack/bolt').App}} param1
  */
-module.exports = async function ({ app }) {
-  const { PrismaClient } = require("@prisma/client");
-  const prisma = new PrismaClient();
+module.exports = async function ({ app, prisma }) {
   app.command("/setuserlocation", async ({ command, body, ack, respond }) => {
     await prisma.$connect();
     await ack();
