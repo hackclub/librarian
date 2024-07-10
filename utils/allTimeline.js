@@ -1,4 +1,7 @@
 const emojis = require("./emojis");
+const crypto = require('crypto');
+const { createClient } = require("redis");
+
 
 async function getChannelEmoji(channelId, prisma) {
   const channel = await prisma.channel.findFirst({
@@ -12,15 +15,19 @@ async function getChannelEmoji(channelId, prisma) {
 
 
 async function generateMessageString(messages, currentTime, prisma) {
-  const interval = 10; 
-  const secondsInDay = 86400; 
+  const client = await createClient({
+    url: process.env.REDIS_DATABASE,
+  })
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+  const interval = 20;
+  const secondsInDay = 86400;
   const intervalsInDay = secondsInDay / interval;
-
   let messageString = '';
   const timeToEmojiMap = {};
 
   for (const message of messages) {
-    const messageTime = parseInt(message.ts.split('.')[0], 10); 
+    const messageTime = parseInt(message.ts.split('.')[0], 10);
     const timeDiff = currentTime - messageTime;
     const intervalIndex = Math.floor(timeDiff / interval);
 
@@ -33,13 +40,15 @@ async function generateMessageString(messages, currentTime, prisma) {
   for (let i = 0; i < intervalsInDay; i++) {
     if (timeToEmojiMap[i]) {
       const { emoji, permalink } = timeToEmojiMap[i];
-      messageString += `<${permalink}|${emoji}>,`;
+      const id = crypto.randomUUID().slice(0, 3)
+      await client.set(`url.${id}`, permalink)
+      messageString += `<https://l.hack.club/${id}|${emoji}>,`;
     } else {
       messageString += '-,';
     }
   }
-
-  return messageString.split(",").slice(0, 10).join(",").replaceAll(",", "");
+  await client.disconnect()
+  return messageString.split(",").slice(0, 20).join(",").replaceAll(",", "");
 }
 
 
