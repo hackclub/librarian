@@ -7,7 +7,6 @@ Array.prototype.random = function () {
 };
 
 module.exports = async function ({ app, client, prisma }) {
-
   async function rake(cursor) {
     const convos = await app.client.conversations.list({
       limit: 999,

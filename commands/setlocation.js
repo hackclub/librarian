@@ -4,7 +4,6 @@
 const getChannelManagers = require("../utils/channelManagers");
 
 module.exports = async function ({ app, prisma }) {
- 
   app.command("/setlocation", async ({ command, body, ack, respond }) => {
     await prisma.$connect();
     await ack();

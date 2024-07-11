@@ -5,7 +5,9 @@ const cron = require("node-cron");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const receiver = new ExpressReceiver({ signingSecret: process.env.SLACK_SIGNING_SECRET });
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -13,11 +15,8 @@ const app = new App({
   socketMode: process.env.PORT ? false : true,
   appToken: process.env.SLACK_APP_TOKEN,
   port: process.env.PORT,
-  receiver
+  receiver,
 });
-
-
-
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -29,10 +28,19 @@ Array.prototype.random = function () {
   })
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
-  receiver.router.get('/:id', async (req, res) => {
-    const { id } = req.params
-    if (!await client.exists(`url.${id}`)) res.send("Sorry, this URL does not exist. If you're following an emoji link, it is no longer valid.") 
-    else res.redirect(302, await client.get(`url.${id}`))
+  receiver.router.get("/", async (req, res) => {
+    const { id } = req.params;
+    if (!(await client.exists(`url.${id}`)))
+      res.redirect(302, "https://github.com/hackclub/channel-directory");
+    else res.redirect(302, await client.get(`url.${id}`));
+  });
+  receiver.router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    if (!(await client.exists(`url.${id}`)))
+      res.send(
+        "Sorry, this URL does not exist. If you're following an emoji link, it is no longer valid.",
+      );
+    else res.redirect(302, await client.get(`url.${id}`));
   });
   // Load commands
 

@@ -1,18 +1,16 @@
 const emojis = require("./emojis");
-const crypto = require('crypto');
+const crypto = require("crypto");
 const { createClient } = require("redis");
-
 
 async function getChannelEmoji(channelId, prisma) {
   const channel = await prisma.channel.findFirst({
     where: {
-      id: channelId
-    }
-  })
-  if (!channel || !channel.emoji) return "💥"
-  return channel.emoji
+      id: channelId,
+    },
+  });
+  if (!channel || !channel.emoji) return "💥";
+  return channel.emoji;
 }
-
 
 async function generateMessageString(messages, currentTime, prisma) {
   const client = await createClient({
@@ -23,11 +21,11 @@ async function generateMessageString(messages, currentTime, prisma) {
   const interval = 20;
   const secondsInDay = 86400;
   const intervalsInDay = secondsInDay / interval;
-  let messageString = '';
+  let messageString = "";
   const timeToEmojiMap = {};
 
   for (const message of messages) {
-    const messageTime = parseInt(message.ts.split('.')[0], 10);
+    const messageTime = parseInt(message.ts.split(".")[0], 10);
     const timeDiff = currentTime - messageTime;
     const intervalIndex = Math.floor(timeDiff / interval);
 
@@ -40,17 +38,15 @@ async function generateMessageString(messages, currentTime, prisma) {
   for (let i = 0; i < intervalsInDay; i++) {
     if (timeToEmojiMap[i]) {
       const { emoji, permalink } = timeToEmojiMap[i];
-      const id = crypto.randomUUID().slice(0, 3)
-      await client.set(`url.${id}`, permalink)
+      const id = crypto.randomUUID().slice(0, 3);
+      await client.set(`url.${id}`, permalink);
       messageString += `<https://l.hack.club/${id}|${emoji}>,`;
     } else {
-      messageString += '-,';
+      messageString += "-,";
     }
   }
-  await client.disconnect()
+  await client.disconnect();
   return messageString.split(",").slice(0, 20).join(",").replaceAll(",", "");
 }
 
-
-module.exports = generateMessageString
-
+module.exports = generateMessageString;

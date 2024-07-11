@@ -25,16 +25,19 @@ module.exports = async function ({ app, client }) {
     ),
   );
   const file = await Buffer.from(
-    await (await fetch("https://cloud-6frqejd8v-hack-club-bot.vercel.app/0hack-club-anime.png")).arrayBuffer()
-  )
+    await (
+      await fetch(
+        "https://cloud-6frqejd8v-hack-club-bot.vercel.app/0hack-club-anime.png",
+      )
+    ).arrayBuffer(),
+  );
   await app.client.files.uploadV2({
     channel_id: process.env.SLACK_CHANNEL,
     file: file,
-    filename: 'welcome to the hack club channel library!.png',
-  })
+    filename: "welcome to the hack club channel library!.png",
+  });
 
-  setTimeout(async function(){
-
+  setTimeout(async function () {
     const tmesg = await app.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
       text: ":spin-loading: Loading library",
@@ -43,6 +46,5 @@ module.exports = async function ({ app, client }) {
       `${process.env.INSTANCE_ID || "production"}.messageId`,
       tmesg.ts,
     );
-  },5000)
-
+  }, 5000);
 };

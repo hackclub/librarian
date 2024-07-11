@@ -32,8 +32,8 @@ module.exports = {
     "C06SBHMQU8G", // arcade
     "C077TSWKER0", // arcade
     "C06S6E7CXK7", // arcade dev
-    "C063RPGKRL2",  // scrapbook
-    "C073DL2R5NK" // flight board for trail
+    "C063RPGKRL2", // scrapbook
+    "C073DL2R5NK", // flight board for trail
   ],
   queries: {
     topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks -in:#trail-flightboard`,

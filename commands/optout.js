@@ -56,6 +56,5 @@ module.exports = async function ({ app, prisma }) {
       await app.client.conversations.leave({
         channel: channel.channel.id,
       });
-
   });
 };
