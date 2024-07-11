@@ -31,7 +31,7 @@ Array.prototype.random = function () {
     .connect();
   receiver.router.get('/:id', async (req, res) => {
     const { id } = req.params
-    if (!client.exists(`url.${id}`)) res.send("Sorry, this URL does not exist. If you're following an emoji link, it is no longer valid.") 
+    if (!await client.exists(`url.${id}`)) res.send("Sorry, this URL does not exist. If you're following an emoji link, it is no longer valid.") 
     else res.redirect(302, await client.get(`url.${id}`))
   });
   // Load commands
