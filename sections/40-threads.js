@@ -63,7 +63,7 @@ module.exports = {
         .replaceAll(
           "@",
           "​@",
-        )}\nFrom <#${msg.channel}> (<${msg.permalink}|Source>)\n\n`;
+        )}\nFrom <#${msg.channel}> (<${msg.permalink}|Source>)\n`;
     });
     return text
       .replaceAll("@", "​@")
