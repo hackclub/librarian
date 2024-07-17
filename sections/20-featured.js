@@ -8,6 +8,7 @@ module.exports = {
     return (text = `<#C75M7C0SY> - Introduce yourself to the community here
 <#C0266FRGV> - Meet new people here
 <#C06SBHMQU8G> - Every hour more power: Get rewarded with cool prizes for working on your own projects
-<#C056WDR3MQR> - Free, powerful, and versatile compute infrastructure for all high school hackers!`);
+<#C056WDR3MQR> - Free, powerful, and versatile compute infrastructure for all high school hackers!
+<#C01504DCLVD> - Share awesome updates about your work-in-progess projects`);
   },
 };

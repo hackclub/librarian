@@ -61,7 +61,6 @@ Array.prototype.random = function () {
   cron.schedule("0,7,14,21,28,35,42,49,56 * * * * *", async () => {
     await require("./utils/pull")({ app, client, prisma });
   });
-
   cron.schedule("0 0,12 * * *", async () => {
     await client.del(`${process.env.INSTANCE_ID || "production"}.messageCache`);
     await require("./utils/redo")({ app, client, prisma });
@@ -71,4 +70,6 @@ Array.prototype.random = function () {
   console.log("Librarian has started.");
   await app.start(process.env.PORT || 3000);
   require("./interactions/channel_created")({ app, client });
+  if (process.env.INSTANCE_ID == "production") await require("./utils/joinall")({ app, client, prisma });
+
 })();
