@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const updateMessage = require("../utils/updateMessage");
 
 /**
- * @param {{app: import('@slack/bolt').App}} param1
+ * @param {{app: import('@slack/bolt').App, client: import('redis').RedisClientType}} param1
  */
 module.exports = ({ app, client }) => {
   app.message(/.*/gim, async ({ message, say, body }) => {
@@ -15,14 +15,20 @@ module.exports = ({ app, client }) => {
         token: process.env.SLACK_USER_TOKEN,
       });
     if (utils.blockedChannels.includes(message.channel)) return;
+
+    message.sort_ts = +new Date() / 1000.0
+    client.lPush(
+      `${process.env.INSTANCE_ID || "production"}.messageCache`,
+      JSON.stringify(message),
+    );
     if (
       (await client.exists(
         `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
       )) &&
       Date.now() <
-        (await client.get(
-          `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
-        ))
+      (await client.get(
+        `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
+      ))
     )
       return;
     if (
@@ -118,7 +124,7 @@ module.exports = ({ app, client }) => {
             priority: "low",
           });
         }, 1000);
-      } catch (e) {}
+      } catch (e) { }
       await client.set(
         `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
         Date.now() + 2000,

@@ -11,23 +11,18 @@ module.exports = {
    * @param {{app: import('@slack/bolt').App}} param1
    */
   render: async function ({ app, client, prisma }) {
-    var messages = await app.client.search.messages({
-      query: utils.queries.topChannels,
-      sort: "timestamp",
-      sort_dir: "desc",
-      count: 100,
-      token: process.env.SLACK_USER_TOKEN,
-    });
+    var messages = (await client.lRange(
+      `${process.env.INSTANCE_ID || "production"}.messageCache`,
+      0, -1
+    )).map(obj => JSON.parse(obj))
 
-    const channels = messages.messages.matches.filter(
+    const channels = messages.filter(
       (match) =>
-        match.channel.is_channel &&
-        !match.channel.is_private &&
         match.text != "archived the channel" &&
-        !utils.blockedChannels.includes(match.channel.id),
+        !utils.blockedChannels.includes(match.channel),
     );
     const channelMap = channels
-      .map((match) => match.channel.id)
+      .map((match) => match.channel)
       .reduce((acc, channel) => {
         acc[channel] = (acc[channel] || 0) + 1;
         return acc;
@@ -52,7 +47,7 @@ module.exports = {
     ).then((texts) => texts.join(""));
     await prisma.$disconnect();
     return (
-      `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages.messages.matches[0].channel.id}>) ${pms(Date.now() - Math.floor(messages.messages.matches[0].ts * 1000))} ago
+      `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages[messages.length-1].channel}>) ${pms(Date.now() - Math.floor(messages[messages.length-1].ts * 1000))} ago
 
 ${await generateMessageString(channels, Math.floor(Date.now() / 1000), prisma)}
 

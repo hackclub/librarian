@@ -12,40 +12,30 @@ module.exports = {
         return text.split("\n")[0].slice(0, 160) + `<${link}|[...]>`;
       return text.slice(0, 160) + `<${link}|[...]>`;
     }
-    var messages = await app.client.search.messages({
-      query: utils.queries.topChannels,
-      sort: "timestamp",
-      sort_dir: "desc",
-      count: 100,
-      token: process.env.SLACK_USER_TOKEN,
-    });
     var text = "";
-    let uniqueMessages = messages.messages.matches
+    const cache = (await client.lRange(
+      `${process.env.INSTANCE_ID || "production"}.messageCache`,
+      0, -1
+    )).map(obj => JSON.parse(obj))
+    let uniqueMessages =cache
       .filter(
         (message) =>
-          !message.channel.is_private &&
-          !utils.blockedChannels.includes(message.channel.id) &&
-          message.text,
+          !utils.blockedChannels.includes(message.channel) &&
+          message.text &&
+          message.thread_ts
       )
       .reduce((acc, message) => {
-        let thread_ts = new URL(message.permalink).searchParams.get(
-          "thread_ts",
-        );
-        if (
-          message.channel.is_private ||
-          !message.channel.is_channel ||
-          message.is_mpim
-        )
-          return acc;
+        let thread_ts = message.thread_ts
+  
         if (
           !acc.find((item) => item.thread_ts === thread_ts) &&
-          !acc.find((item) => item.channel.id === message.channel.id)
+          !acc.find((item) => item.channel === message.channel)
         ) {
           acc.push({
             thread_ts: thread_ts,
-            permalink: message.permalink,
+            permalink: `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`,
             text: message.text,
-            channel: message.channel.id,
+            channel: message.channel,
           });
         }
         return acc;

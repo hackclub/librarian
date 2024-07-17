@@ -2,14 +2,32 @@ const emojis = require("./emojis");
 const crypto = require("crypto");
 const { createClient } = require("redis");
 
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
 async function getChannelEmoji(channelId, prisma) {
   const channel = await prisma.channel.findFirst({
     where: {
       id: channelId,
     },
   });
-  if (!channel || !channel.emoji) return "💥";
-  return channel.emoji;
+  const newEmoji = emojis.random()
+  if (!channel) await prisma.channel.create({
+    data: {
+      id: channelId,
+      emoji: newEmoji
+    }
+  })
+  else if (!channel.emoji) await prisma.channel.updateFirst({
+    where: {
+      id: channelId,
+    },
+    data: {
+      emoji: newEmoji
+    }
+  })
+  return channel?.emoji || newEmoji;
 }
 
 async function generateMessageString(messages, currentTime, prisma) {
@@ -25,13 +43,16 @@ async function generateMessageString(messages, currentTime, prisma) {
   const timeToEmojiMap = {};
 
   for (const message of messages) {
-    const messageTime = parseInt(message.ts.split(".")[0], 10);
+    //console.log(message)
+    if (!message.sort_ts) continue;
+    const messageTime = parseInt(message.sort_ts.toString().split(".")[0], 10);
     const timeDiff = currentTime - messageTime;
     const intervalIndex = Math.floor(timeDiff / interval);
 
     if (intervalIndex < intervalsInDay) {
-      const emoji = await getChannelEmoji(message.channel.id, prisma);
-      timeToEmojiMap[intervalIndex] = { emoji, permalink: message.permalink };
+      const emoji = await getChannelEmoji(message.channel, prisma);
+      var permalink = `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`
+      timeToEmojiMap[intervalIndex] = { emoji, permalink };
     }
   }
 
@@ -46,7 +67,7 @@ async function generateMessageString(messages, currentTime, prisma) {
     }
   }
   await client.disconnect();
-  return messageString.split(",").slice(0, 20).join(",").replaceAll(",", "");
+  return messageString.split(",").slice(0, 30).join(",").replaceAll(",", "");
 }
 
 module.exports = generateMessageString;
