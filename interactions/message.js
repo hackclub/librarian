@@ -100,7 +100,7 @@ module.exports = ({ app, client }) => {
               elements: subBlocks,
             },
           ],
-          priority: "low",
+          priority: "high",
         });
 
         setTimeout(async function () {

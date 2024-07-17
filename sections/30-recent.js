@@ -57,7 +57,7 @@ module.exports = {
         },
       ];
     return (
-      `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages[messages.length - 1].channel}>) ${pms(Date.now() - Math.floor(messages[messages.length - 1].ts * 1000))} ago
+      `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages[0].channel}>) ${pms(Date.now() - Math.floor(messages[0].ts * 1000))} ago
 
 ${await generateMessageString(channels, Math.floor(Date.now() / 1000), prisma)}
 
