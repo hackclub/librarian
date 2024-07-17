@@ -46,6 +46,10 @@ module.exports = {
       }),
     ).then((texts) => texts.join(""));
     await prisma.$disconnect();
+    if (!messages || messages.length === 0) messages = [{
+      ts: +new Date() / 1000.0,
+      channel: process.env.SLACK_CHANNEL
+    }]
     return (
       `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages[messages.length-1].channel}>) ${pms(Date.now() - Math.floor(messages[messages.length-1].ts * 1000))} ago
 
