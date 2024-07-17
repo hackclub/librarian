@@ -16,7 +16,7 @@ module.exports = ({ app, client }) => {
       });
     if (utils.blockedChannels.includes(message.channel)) return;
 
-    message.sort_ts = +new Date() / 1000.0
+    message.sort_ts = +new Date() / 1000.0;
     client.lPush(
       `${process.env.INSTANCE_ID || "production"}.messageCache`,
       JSON.stringify(message),
@@ -26,9 +26,9 @@ module.exports = ({ app, client }) => {
         `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
       )) &&
       Date.now() <
-      (await client.get(
-        `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
-      ))
+        (await client.get(
+          `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
+        ))
     )
       return;
     if (
@@ -124,7 +124,7 @@ module.exports = ({ app, client }) => {
             priority: "low",
           });
         }, 1000);
-      } catch (e) { }
+      } catch (e) {}
       await client.set(
         `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
         Date.now() + 2000,

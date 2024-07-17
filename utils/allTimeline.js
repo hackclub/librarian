@@ -12,21 +12,23 @@ async function getChannelEmoji(channelId, prisma) {
       id: channelId,
     },
   });
-  const newEmoji = emojis.random()
-  if (!channel) await prisma.channel.create({
-    data: {
-      id: channelId,
-      emoji: newEmoji
-    }
-  })
-  else if (!channel.emoji) await prisma.channel.updateFirst({
-    where: {
-      id: channelId,
-    },
-    data: {
-      emoji: newEmoji
-    }
-  })
+  const newEmoji = emojis.random();
+  if (!channel)
+    await prisma.channel.create({
+      data: {
+        id: channelId,
+        emoji: newEmoji,
+      },
+    });
+  else if (!channel.emoji)
+    await prisma.channel.updateFirst({
+      where: {
+        id: channelId,
+      },
+      data: {
+        emoji: newEmoji,
+      },
+    });
   return channel?.emoji || newEmoji;
 }
 
@@ -51,7 +53,7 @@ async function generateMessageString(messages, currentTime, prisma) {
 
     if (intervalIndex < intervalsInDay) {
       const emoji = await getChannelEmoji(message.channel, prisma);
-      var permalink = `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`
+      var permalink = `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`;
       timeToEmojiMap[intervalIndex] = { emoji, permalink };
     }
   }

@@ -13,20 +13,23 @@ module.exports = {
       return text.slice(0, 160) + `<${link}|[...]>`;
     }
     var text = "";
-    const cache = (await client.lRange(
-      `${process.env.INSTANCE_ID || "production"}.messageCache`,
-      0, -1
-    )).map(obj => JSON.parse(obj))
-    let uniqueMessages =cache
+    const cache = (
+      await client.lRange(
+        `${process.env.INSTANCE_ID || "production"}.messageCache`,
+        0,
+        -1,
+      )
+    ).map((obj) => JSON.parse(obj));
+    let uniqueMessages = cache
       .filter(
         (message) =>
           !utils.blockedChannels.includes(message.channel) &&
           message.text &&
-          message.thread_ts
+          message.thread_ts,
       )
       .reduce((acc, message) => {
-        let thread_ts = message.thread_ts
-  
+        let thread_ts = message.thread_ts;
+
         if (
           !acc.find((item) => item.thread_ts === thread_ts) &&
           !acc.find((item) => item.channel === message.channel)
