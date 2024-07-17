@@ -38,7 +38,7 @@ async function generateMessageString(messages, currentTime, prisma) {
   })
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
-  const interval = 20;
+  const interval = 10;
   const secondsInDay = 86400;
   const intervalsInDay = secondsInDay / interval;
   let messageString = "";
