@@ -21,7 +21,7 @@ async function getChannelEmoji(channelId, prisma) {
       },
     });
   else if (!channel.emoji)
-    await prisma.channel.updateFirst({
+    await prisma.channel.update({
       where: {
         id: channelId,
       },
