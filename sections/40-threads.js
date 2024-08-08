@@ -19,7 +19,7 @@ module.exports = {
         0,
         -1,
       )
-    ).map((obj) => JSON.parse(obj));
+    ).map((obj) => JSON.parse(obj)).sort((a, b) => b.sort_ts - a.sort_ts);
     let uniqueMessages = cache
       .filter(
         (message) =>
