@@ -6,7 +6,7 @@ module.exports = async function getChannelManagers(channel) {
 
   const formdata = new FormData();
   formdata.append("token", process.env.SLACK_BROWSER_TOKEN);
-  formdata.append("entity_id", "C165V7XT9");
+  formdata.append("entity_id", channel);
 
   const requestOptions = {
     method: "POST",
