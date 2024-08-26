@@ -12,7 +12,7 @@ module.exports = {
     "C02GK2TVAVB", // #temp-email
     "C078Q8PBD4G", // #library
     "C029E8FARRC", // #minecraft-bridge
-    "C059LMYAH88", // longest thread on slack (krn)
+    "C06QV2T1P4G", // longest thread on slack (krn)
     // Here's a list of bot channels/spammy channels
     // This goes here in order to prevent the indexing of artificially inflated rankings
     "C0P5NE354",
