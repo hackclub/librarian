@@ -62,7 +62,6 @@ Array.prototype.random = function () {
     await require("./utils/pull")({ app, client, prisma });
   }, 3000)
   cron.schedule("0 0,12 * * *", async () => {
-    await client.del(`${process.env.INSTANCE_ID || "production"}.messageCache`);
     await require("./utils/redo")({ app, client, prisma });
     await require("./utils/joinall")({ app, client, prisma });
   });
