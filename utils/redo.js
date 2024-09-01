@@ -14,7 +14,7 @@ module.exports = async function ({ app, client }) {
     messages.map((message) =>
       app.client.chat
         .delete({
-          token: process.env.SLACK_USER_TOKEN,
+          token: process.env.SLACK_BOT_TOKEN,
           channel: process.env.SLACK_CHANNEL,
           ts: message?.ts,
           thread_ts: message?.thread_ts,
