@@ -12,7 +12,7 @@ module.exports = ({ app, client }) => {
       await app.client.chat.delete({
         channel: message.channel,
         ts: message.ts,
-        token: process.env.SLACK_USER_TOKEN,
+        token: process.env.SLACK_BOT_TOKEN,
       });
     if (utils.blockedChannels.includes(message.channel)) return;
 
