@@ -41,11 +41,16 @@ async function generateMessageString(messages, currentTime, prisma) {
   const interval = 10;
   const secondsInDay = 86400;
   const intervalsInDay = secondsInDay / interval;
-  let messageString = "";
-  const timeToEmojiMap = {};
+
+  let timeToEmojiMap = {};
+  for (let i = 0; i < intervalsInDay; i++) {
+    const data = await client.get(`timeline.${i}`);
+    if (data) {
+      timeToEmojiMap[i] = JSON.parse(data);
+    }
+  }
 
   for (const message of messages) {
-    //console.log(message)
     if (!message.sort_ts) continue;
     const messageTime = parseInt(message.sort_ts.toString().split(".")[0], 10);
     const timeDiff = currentTime - messageTime;
@@ -53,11 +58,13 @@ async function generateMessageString(messages, currentTime, prisma) {
 
     if (intervalIndex < intervalsInDay) {
       const emoji = await getChannelEmoji(message.channel, prisma);
-      var permalink = `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`;
+      const permalink = `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`;
       timeToEmojiMap[intervalIndex] = { emoji, permalink };
+      await client.set(`timeline.${intervalIndex}`, JSON.stringify({ emoji, permalink }));
     }
   }
 
+  let messageString = "";
   for (let i = 0; i < intervalsInDay; i++) {
     if (timeToEmojiMap[i]) {
       const { emoji, permalink } = timeToEmojiMap[i];
@@ -68,6 +75,7 @@ async function generateMessageString(messages, currentTime, prisma) {
       messageString += "-,";
     }
   }
+
   await client.disconnect();
   return messageString.split(",").slice(0, 30).join(",").replaceAll(",", "");
 }
