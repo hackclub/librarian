@@ -1,4 +1,5 @@
 const utils = require("../utils");
+const { createClient } = require("redis");
 
 module.exports = {
   title: "🧵 Top 5 most recently active threads",
@@ -7,7 +8,6 @@ module.exports = {
    * @param {{app: import('@slack/bolt').App}} param1
    */
   render: async function ({ app, client, prisma }) {
- 
     function reduceText(text, link) {
       if (text.length <= 160) return text;
       if (text.split("\n").length > 1)
@@ -29,7 +29,7 @@ module.exports = {
           message.text &&
           message.thread_ts,
       )
-      .reduce(async (acc, message) => {
+      .reduce((acc, message) => {
         let thread_ts = message.thread_ts;
 
         if (
@@ -37,7 +37,8 @@ module.exports = {
           !acc.find((item) => item.channel === message.channel)
         ) {
           const id = crypto.randomUUID().slice(0, 3);
-          await client.set(`url.${id}`, `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`)
+          client.set(`url.${id}`, `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`)
+          client.
           acc.push({
             thread_ts: thread_ts,
             permalink: `https://l.hack.club/${id}`,
