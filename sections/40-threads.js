@@ -2,7 +2,7 @@ const utils = require("../utils");
 const { createClient } = require("redis");
 
 module.exports = {
-  title: "🧵 Top 5 most recently active threads",
+  title: "🧵 Top 10 most recently active threads",
   description: "Most active threads in Hack Club",
   /**
    * @param {{app: import('@slack/bolt').App}} param1
