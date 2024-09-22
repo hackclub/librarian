@@ -47,7 +47,7 @@ module.exports = {
         }
         return acc;
       }, [])
-      .slice(0, 5);
+      .slice(0, 10);
 
     uniqueMessages.forEach(function (msg) {
       // There is a zero width space in the below "replaceAll".
