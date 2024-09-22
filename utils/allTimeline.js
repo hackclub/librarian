@@ -38,17 +38,11 @@ async function generateMessageString(messages, currentTime, prisma) {
   })
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
-  const interval = 10;
+  const interval = 5;
   const secondsInDay = 86400;
   const intervalsInDay = secondsInDay / interval;
-
-  let timeToEmojiMap = {};
-  for (let i = 0; i < intervalsInDay; i++) {
-    const data = await client.get(`timeline.${i}`);
-    if (data) {
-      timeToEmojiMap[i] = JSON.parse(data);
-    }
-  }
+  let messageString = "";
+  const timeToEmojiMap = {};
 
   for (const message of messages) {
     if (!message.sort_ts) continue;
@@ -56,15 +50,13 @@ async function generateMessageString(messages, currentTime, prisma) {
     const timeDiff = currentTime - messageTime;
     const intervalIndex = Math.floor(timeDiff / interval);
 
-    if (intervalIndex < intervalsInDay) {
+    if (intervalIndex < intervalsInDay && !timeToEmojiMap[intervalIndex]) {
       const emoji = await getChannelEmoji(message.channel, prisma);
       const permalink = `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`;
       timeToEmojiMap[intervalIndex] = { emoji, permalink };
-      await client.set(`timeline.${intervalIndex}`, JSON.stringify({ emoji, permalink }));
     }
   }
 
-  let messageString = "";
   for (let i = 0; i < intervalsInDay; i++) {
     if (timeToEmojiMap[i]) {
       const { emoji, permalink } = timeToEmojiMap[i];
@@ -75,9 +67,8 @@ async function generateMessageString(messages, currentTime, prisma) {
       messageString += "-,";
     }
   }
-
   await client.disconnect();
-  return messageString.split(",").slice(0, 30).join(",").replaceAll(",", "");
+  return messageString.split(",").slice(0, 30).join(",").replace(/,/g, "");
 }
 
 module.exports = generateMessageString;
