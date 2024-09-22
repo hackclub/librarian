@@ -38,7 +38,6 @@ module.exports = {
         ) {
           const id = crypto.randomUUID().slice(0, 3);
           client.set(`url.${id}`, `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`)
-          client.
           acc.push({
             thread_ts: thread_ts,
             permalink: `https://l.hack.club/${id}`,
