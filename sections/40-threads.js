@@ -9,9 +9,9 @@ module.exports = {
    */
   render: async function ({ app, client, prisma }) {
     function reduceText(text, link) {
-      if (text.length <= 160) return text;
-      if (text.split("\n").length > 1)
-        return text.split("\n")[0].slice(0, 160) + `<${link}|[...]>`;
+      const nli = text.indexOf("\n");
+      if (nli !== -1) return text.slice(0, nli) + `<${link}|[...]>`;
+      if (text.length <= 160) return text
       return text.slice(0, 160) + `<${link}|[...]>`;
     }
     var text = "";
