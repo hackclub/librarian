@@ -32,7 +32,7 @@ module.exports = {
       }, {});
     const sortedChannels = Object.keys(channelMap)
       .sort((a, b) => channelMap[b] - channelMap[a])
-      .slice(0, 10);
+      .slice(0, 20);
     let text = await Promise.all(
       sortedChannels.map(async (channel) => {
         const channelRecord = await prisma.channel.findFirst({
