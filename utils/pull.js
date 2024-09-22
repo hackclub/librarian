@@ -50,10 +50,7 @@ module.exports = async function ({ app, client, prisma }) {
     });
 
   await Promise.all(bPromises);
-  /*
-  text += `\nLast Updated on ${new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeStyle: "long", dateStyle: "long" })}\nWant to dive into a specific subject? Click one of the buttons below:`;
-  client.set(`${process.env.INSTANCE_ID || "production"}.messageText`, text);
-*/
+
   try {
     await updateMessage({
       app,

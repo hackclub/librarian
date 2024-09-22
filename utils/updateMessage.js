@@ -5,7 +5,6 @@ const { createClient } = require("redis");
  */
 module.exports = async function ({ app, text, blocks, priority, client }) {
   if (
-    priority != "high" &&
     (await client.exists(
       `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
     )) &&
@@ -18,18 +17,24 @@ module.exports = async function ({ app, text, blocks, priority, client }) {
   const messageId = await client.get(
     `${process.env.INSTANCE_ID || "production"}.messageId`,
   );
+  const finalText = text
+  .replaceAll("@", "​@")
+  .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "")
+  .replaceAll("<!channel>", "[channel]")
+  .replaceAll("<!here>", "[here]")
+  await client.set(
+    `${process.env.INSTANCE_ID || "production"}.messageText`,
+    finalText
+  );
   await app.client.chat.update({
     channel: process.env.SLACK_CHANNEL,
     ts: messageId,
-    text: text
-      .replaceAll("@", "​@")
-      .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "")
-      .replaceAll("<!channel>", "[channel]")
-      .replaceAll("<!here>", "[here]"),
+    text: finalText,
     blocks,
   });
+  
   await client.set(
     `${process.env.INSTANCE_ID || "production"}.newChannelMessage`,
-    Date.now() + 2000,
+    Date.now() + 1000,
   );
 };
