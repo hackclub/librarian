@@ -31,7 +31,8 @@ module.exports = ({ app, client }) => {
         ))
     )
       return;
-    if (
+    return;
+      if (
       (await client.exists(
         `${process.env.INSTANCE_ID || "production"}.messageText`,
       )) &&
