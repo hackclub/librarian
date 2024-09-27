@@ -66,10 +66,10 @@ module.exports = async function ({ app, client, prisma }) {
               .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, ""),
           },
         },
-        /*{
+        {
           type: "actions",
           elements: subBlocks,
-        },*/
+        },
       ],
       priority: "high",
     });
