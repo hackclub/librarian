@@ -11,7 +11,7 @@ module.exports = {
         featured: true
       }
     })
-    channels.map(channel => `<#${channel.id}> ${channel.description ? `- ${channel.description}` : ""}`)
-    return channels.join("\n")
+    channels = channels.map(channel => `<#${channel.id}> ${channel.description ? `- ${channel.description}` : ""}`)
+    return `These are active events and programs featured by Hack Club Staff\n${channels.join("\n")}`
   },
 };
