@@ -14,9 +14,10 @@ ${figlet.textSync("Hardware", {
 })}
 \`\`\`
 Hack Club has started the process of getting teenagers into more hardware-based projects!
-
-OnBoard: Get $100 to build your own custom PCB. Learn more at https://hackclub.com/onboard (<#C056AMWSFKJ>)
-
+<#C078GBDKC03>: Join Hack Clubbers in building an open source 3D printer
+<#C056AMWSFKJ>:
+  - OnBoard: Get $100 to build your own custom PCB. Learn more at https://hackclub.com/onboard
+  - Bin: Design a project online, get parts shipped to your door, and build it IRL. Learn more at https://hackclub.com/bin/
 All of these events and programs are *free* for you to participate in.`;
   },
 };
