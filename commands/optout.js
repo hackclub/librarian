@@ -34,8 +34,22 @@ module.exports = async function ({ app, prisma }) {
       return await respond(
         "This channel cannot be locked as it is locked in the database. Usually, this is because it is a public, community-owned channel, i.e. #lounge, #code, etc.",
       );
-    else if (channelRecord.optout)
-      return await respond("This channel is already opted out of the library.");
+    else if (channelRecord.optout) {
+      await prisma.channel.update({
+        where: {
+          id: channelId,
+        },
+        data: {
+          optout: true,
+          lat: null,
+          lon: null,
+        },
+      });
+      return await respond(
+        "Your channel has been updated to show in #library. Run the command again to remove it.",
+      );
+    }
+
     else
       await prisma.channel.update({
         where: {

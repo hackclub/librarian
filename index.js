@@ -48,6 +48,8 @@ Array.prototype.random = function () {
   await require("./commands/setlocation")({ app, client, prisma });
   await require("./commands/setuserlocation")({ app, client, prisma });
   await require("./commands/setemoji")({ app, client, prisma });
+  await require("./commands/setfeatured")({ app, client, prisma });
+
 
   // This deletes and sends a new message to bypass the 10 day editing limit
 

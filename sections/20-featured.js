@@ -2,14 +2,16 @@ module.exports = {
   title: "⭐ Featured Channels",
   description: "Channels featured by Hack Club",
   /**
-   * @param {{app: import('@slack/bolt').App}} param1
+    * @param {{app: import('@slack/bolt').App, prisma: import('@prisma/client').PrismaClient}} param1
+
    */
-  render: async function ({ app }) {
-    return (text = `
-<#C07NWJSQR5J> - Hack Club's satelite game jam in over 200+ cities.
-<#C75M7C0SY> - Introduce yourself to the community here.
-<#C0266FRGV> - Meet new people here.
-<#C056WDR3MQR> - Free, powerful, and versatile compute infrastructure for all high school hackers!
-<#C01504DCLVD> - Share awesome updates about your work-in-progess projects`);
+  render: async function ({ app, prisma }) {
+    var channels = await prisma.channel.findMany({
+      where: {
+        featured: true
+      }
+    })
+    channels.map(channel => `<#${channel.id}> ${channel.description ? `- ${channel.description}` : ""}`)
+    return channels.join("\n")
   },
 };
