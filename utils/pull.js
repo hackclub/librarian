@@ -63,7 +63,7 @@ module.exports = async function ({ app, client, prisma }) {
             type: "mrkdwn",
             text: text
               .replaceAll("@", "​@")
-              .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, ""),
+              .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "").slice(0,2999),
           },
         },
         {
