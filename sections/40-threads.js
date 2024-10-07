@@ -56,7 +56,9 @@ module.exports = {
         .split("\n")
         .map((str) => "> " + str)
         .join("\n")
-        .replaceAll(/<@[^|]+\|([^>]+)>/g, "[$1]")
+        .replace(/<@[^|]+\|([^>]+)>/g, "[$1]")
+        .replace(/<@.*?>/g, "[user]")
+        .replace(/!subteam\^.*?\b/g, "[group]")
         .replaceAll(
           "@",
           "​@",
