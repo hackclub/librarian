@@ -11,8 +11,8 @@ module.exports = {
     function reduceText(text, link) {
       const nli = text.indexOf("\n");
       if (nli !== -1) return text.slice(0, nli) + `<${link}|[...]>`;
-      if (text.length <= 160) return text
-      return text.slice(0, 160) + `<${link}|[...]>`;
+      if (text.length <= 100) return text
+      return text.slice(0, 100) + `<${link}|[...]>`;
     }
     var text = "";
     const cache = (
