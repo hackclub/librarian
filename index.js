@@ -26,7 +26,7 @@ Array.prototype.random = function () {
   const client = await createClient({
     url: process.env.REDIS_DATABASE,
   })
-    .on("error", (err) => console.log("Redis Client Error", err))
+    .on("error", (err) => console.error("Redis Client Error", err))
     .connect();
   receiver.router.get("/", async (req, res) => {
     res.redirect(302, "https://github.com/hackclub/channel-directory");

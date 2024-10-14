@@ -26,6 +26,7 @@ module.exports = async function ({ app, client, prisma }) {
     await app.client.chat.update({
       channel: process.env.SLACK_CHANNEL,
       ts: await client.get(`${process.env.INSTANCE_ID || "production"}.${section.id}.messageId`),
+      text: `*${section.title}*\n\n${rend}\n\n════════════════════════════════════\n`,
       blocks: [
         {
           type: "section",

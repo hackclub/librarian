@@ -12,11 +12,8 @@
   "dependencies": {
     "@prisma/client": "5.17.0",
     "@slack/bolt": "^3.18.0",
-    "airtable": "^0.12.2",
     "dotenv": "^16.4.5",
     "figlet": "^1.7.0",
-    "geoip-lite2": "^2.1.36",
-    "geolib": "^3.3.4",
     "node-cron": "^3.0.3",
     "pretty-ms": "7.0.1",
     "prisma": "^5.17.0",

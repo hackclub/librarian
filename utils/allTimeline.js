@@ -1,6 +1,5 @@
 const emojis = require("./emojis");
-const crypto = require("crypto");
-const { createClient } = require("redis");
+
 
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -33,11 +32,6 @@ async function getChannelEmoji(channelId, prisma) {
 }
 
 async function generateMessageString(messages, currentTime, prisma) {
-  const client = await createClient({
-    url: process.env.REDIS_DATABASE,
-  })
-    .on("error", (err) => console.log("Redis Client Error", err))
-    .connect();
   const interval = 5;
   const secondsInDay = 86400;
   const intervalsInDay = secondsInDay / interval;

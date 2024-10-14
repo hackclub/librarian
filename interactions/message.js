@@ -1,6 +1,4 @@
 const utils = require("../utils");
-const pms = require("pretty-ms");
-const fs = require("node:fs");
 
 /**
  * @param {{app: import('@slack/bolt').App, client: import('redis').RedisClientType}} param1
