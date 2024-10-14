@@ -27,10 +27,7 @@ module.exports = {
     );
     const channelMap = channels
       .map((match) => match.channel)
-      .reduce((acc, channel) => {
-        acc[channel] = (acc[channel] || 0) + 1;
-        return acc;
-      }, {});
+
     const sortedChannels = Object.keys(channelMap)
       .sort((a, b) => channelMap[b] - channelMap[a])
       .slice(0, 15);
