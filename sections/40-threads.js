@@ -12,8 +12,8 @@ module.exports = {
     function reduceText(text, link) {
       const nli = text.indexOf("\n");
       if (nli !== -1) return text.slice(0, nli) + `<${link}|[...]>`;
-      if (text.length <= 100) return text
-      return text.slice(0, 100) + `<${link}|[...]>`;
+      if (text.length <= 120) return text
+      return text.slice(0, 120) + `<${link}|[...]>`;
     }
     var text = "";
     const cache = (
@@ -37,8 +37,6 @@ module.exports = {
           !acc.find((item) => item.thread_ts === thread_ts) &&
           !acc.find((item) => item.channel === message.channel)
         ) {
-          //const id = crypto.randomUUID().slice(0, 3);
-          //client.set(`url.${id}`,)
           acc.push({
             thread_ts: thread_ts,
             permalink:  `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`,

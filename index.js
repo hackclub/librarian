@@ -29,10 +29,7 @@ Array.prototype.random = function () {
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
   receiver.router.get("/", async (req, res) => {
-    const { id } = req.params;
-    if (!(await client.exists(`url.${id}`)))
-      res.redirect(302, "https://github.com/hackclub/channel-directory");
-    else res.redirect(302, await client.get(`url.${id}`));
+    res.redirect(302, "https://github.com/hackclub/channel-directory");
   });
 
   await require("./commands/optout")({ app, client, prisma });
@@ -51,7 +48,7 @@ Array.prototype.random = function () {
 
   setInterval(async function () {
     await require("./utils/pull")({ app, client, prisma });
-  }, 1000*10)
+  }, 1000 * 10)
   cron.schedule("0 0,12 * * *", async () => {
     await client.del(`${process.env.INSTANCE_ID || "production"}.messageCache`);
     await require("./utils/redo")({ app, client, prisma });

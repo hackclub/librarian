@@ -27,12 +27,7 @@ module.exports = {
     );
     const channelMap = channels
       .map((match) => match.channel)
-      .reduce((acc, channel) => {
-        acc[channel] = (acc[channel] || 0) + 1;
-        return acc;
-      }, {});
     const sortedChannels = Object.keys(channelMap)
-      .sort((a, b) => channelMap[b] - channelMap[a])
       .slice(0, 15);
     let text = await Promise.all(
       sortedChannels.map(async (channel) => {
@@ -46,7 +41,6 @@ module.exports = {
         } else {
           return `- ${channelRecord.emoji} <#${channel}>\n`;
         }
-        // (${await timeline({ app, channel })})
       }),
     ).then((texts) => texts.join(""));
     await prisma.$disconnect();

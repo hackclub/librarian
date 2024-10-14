@@ -60,8 +60,6 @@ async function generateMessageString(messages, currentTime, prisma) {
   for (let i = 0; i < intervalsInDay; i++) {
     if (timeToEmojiMap[i]) {
       const { emoji, permalink } = timeToEmojiMap[i];
-      const id = crypto.randomUUID().slice(0, 3);
-      await client.set(`url.${id}`, permalink);
       messageString += `<${permalink}|${emoji}>,`;
     } else {
       messageString += "-,";
