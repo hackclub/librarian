@@ -15,7 +15,7 @@ const app = new App({
   socketMode: !Boolean(process.env.PORT),
   appToken: process.env.SLACK_APP_TOKEN,
   port: process.env.PORT,
-  receiver: process.env.PORT ? reciever : undefined,
+  receiver: process.env.PORT ? receiver : undefined,
 });
 
 Array.prototype.random = function () {
