@@ -3,6 +3,7 @@ const { createClient } = require("redis");
 
 module.exports = {
   title: "🧵 Top 10 most recently active threads",
+  id: "threads",
   description: "Most active threads in Hack Club",
   /**
    * @param {{app: import('@slack/bolt').App}} param1
@@ -36,11 +37,11 @@ module.exports = {
           !acc.find((item) => item.thread_ts === thread_ts) &&
           !acc.find((item) => item.channel === message.channel)
         ) {
-          const id = crypto.randomUUID().slice(0, 3);
-          client.set(`url.${id}`, `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`)
+          //const id = crypto.randomUUID().slice(0, 3);
+          //client.set(`url.${id}`,)
           acc.push({
             thread_ts: thread_ts,
-            permalink: `https://l.hack.club/${id}`,
+            permalink:  `https://hackclub.slack.com/archives/${message.channel}/p${message.ts.toString().replace(".", "")}`,
             text: message.text,
             channel: message.channel,
           });

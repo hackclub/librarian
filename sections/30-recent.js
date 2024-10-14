@@ -6,6 +6,7 @@ const generateMessageString = require("../utils/allTimeline");
 //const timeline = require("../utils/timeline.disabled.js")
 module.exports = {
   title: "🆕 Most Recent Activity",
+  id: "recent",
   description: "This gets the most recently updates channels",
   /**
    * @param {{app: import('@slack/bolt').App}} param1

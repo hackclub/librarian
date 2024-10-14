@@ -62,12 +62,11 @@ async function generateMessageString(messages, currentTime, prisma) {
       const { emoji, permalink } = timeToEmojiMap[i];
       const id = crypto.randomUUID().slice(0, 3);
       await client.set(`url.${id}`, permalink);
-      messageString += `<https://l.hack.club/${id}|${emoji}>,`;
+      messageString += `<${permalink}|${emoji}>,`;
     } else {
       messageString += "-,";
     }
   }
-  await client.disconnect();
   return messageString.split(",").slice(0, 30).join(",").replace(/,/g, "");
 }
 

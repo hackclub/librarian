@@ -1,5 +1,6 @@
 module.exports = {
   title: "⭐ Featured Channels",
+  id: "featured",
   description: "Channels featured by Hack Club",
   /**
     * @param {{app: import('@slack/bolt').App, prisma: import('@prisma/client').PrismaClient}} param1

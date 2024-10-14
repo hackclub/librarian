@@ -12,10 +12,10 @@ const receiver = new ExpressReceiver({
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  socketMode: process.env.PORT ? false : true,
+  socketMode: !Boolean(process.env.PORT),
   appToken: process.env.SLACK_APP_TOKEN,
   port: process.env.PORT,
-  receiver,
+  receiver: process.env.PORT ? reciever : undefined,
 });
 
 Array.prototype.random = function () {
@@ -34,15 +34,6 @@ Array.prototype.random = function () {
       res.redirect(302, "https://github.com/hackclub/channel-directory");
     else res.redirect(302, await client.get(`url.${id}`));
   });
-  receiver.router.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    if (!(await client.exists(`url.${id}`)))
-      res.send(
-        "Sorry, this URL does not exist. If you're following an emoji link, it is no longer valid.",
-      );
-    else res.redirect(302, await client.get(`url.${id}`));
-  });
-  // Load commands
 
   await require("./commands/optout")({ app, client, prisma });
   await require("./commands/setlocation")({ app, client, prisma });
@@ -51,18 +42,16 @@ Array.prototype.random = function () {
   await require("./commands/setfeatured")({ app, client, prisma });
 
 
-  // This deletes and sends a new message to bypass the 10 day editing limit
-
+  // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
   // This runs the same thing on startup
   await require("./utils/redo")({ app, client, prisma });
   // app.message functions go here
   await require("./interactions/message")({ app, client, prisma });
 
-  await require("./utils/pull")({ app, client, prisma });
 
-  setInterval(async function(){
+  setInterval(async function () {
     await require("./utils/pull")({ app, client, prisma });
-  }, 5000)
+  }, 1000*10)
   cron.schedule("0 0,12 * * *", async () => {
     await client.del(`${process.env.INSTANCE_ID || "production"}.messageCache`);
     await require("./utils/redo")({ app, client, prisma });

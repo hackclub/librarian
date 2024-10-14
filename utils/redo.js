@@ -4,6 +4,7 @@
  * @param {{app: import('@slack/bolt').App}} param1
  */
 const figlet = require("figlet");
+const fs = require("node:fs")
 module.exports = async function ({ app, client }) {
   const data = await app.client.conversations.history({
     channel: process.env.SLACK_CHANNEL,
@@ -36,15 +37,71 @@ module.exports = async function ({ app, client }) {
     file: file,
     filename: "welcome to the hack club channel library!.png",
   });
+  var subBlocks = [];
+  let bPromises = fs
+    .readdirSync("./buttons")
+    .filter((str) => str.endsWith(".js"))
+    .sort()
+    .map(async (fn) => {
+      const id = Math.random().toString(32).slice(2);
+      const button = await require(`../buttons/${fn}`);
+      subBlocks.push({
+        type: "button",
+        text: {
+          type: "plain_text",
+          text: button.title,
+          emoji: true,
+        },
+        value: `../buttons/${fn}`,
+        action_id: id,
+      });
+      app.action(id, async ({ ack, respond, say, body }) => {
+        await ack();
 
-  setTimeout(async function () {
-    const tmesg = await app.client.chat.postMessage({
-      channel: process.env.SLACK_CHANNEL,
-      text: ":spin-loading: Loading library",
+        await app.client.chat.postEphemeral({
+          channel: body.channel.id,
+          user: body.user.id,
+          text: await require(body.actions[0].value).render({
+            app,
+            body,
+            client,
+          }),
+        });
+      });
     });
-    await client.set(
-      `${process.env.INSTANCE_ID || "production"}.messageId`,
-      tmesg.ts,
-    );
+
+  await Promise.all(bPromises);
+  setTimeout(async function () {
+    var sFiles = fs.readdirSync("./sections");
+    let sFilesSorted = sFiles.filter((str) => str.endsWith(".js")).sort().map(file => require(`../sections/${file}`))
+    for (const fn of sFilesSorted) {
+      var msg = await app.client.chat.postMessage({
+        channel: process.env.SLACK_CHANNEL,
+        text: `:spin-loading: Loading library section: ${fn.id}`,
+      });
+      await client.set(
+        `${process.env.INSTANCE_ID || "production"}.${fn.id}.messageId`,
+        msg.ts,
+      )
+    }
+
+    await app.client.chat.postMessage({
+      channel: process.env.SLACK_CHANNEL,
+      text: "Find more sections tailored to you by clicking a button below!",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "Find more sections tailored to you by clicking a button below!",
+          },
+        },
+        {
+          type: "actions",
+          elements: subBlocks,
+        },
+      ],
+    });
+
   }, 5000);
 };

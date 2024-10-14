@@ -1,7 +1,6 @@
 // This pulls all files in sections/*
 // This allows directory to stay modular.
 const fs = require("node:fs");
-const updateMessage = require("../utils/updateMessage");
 
 /**
  * @param {{app: import('@slack/bolt').App}} param1
@@ -14,64 +13,14 @@ module.exports = async function ({ app, client, prisma }) {
   for (const fn of sFilesSorted) {
     const section = await require(`../sections/${fn}`);
     const rend = (await section.render({ app, client, prisma })).trim();
-    text += `${section.title}\n\n${rend}\n\n════════════════════════════════════\n`;
+
+    await app.client.chat.update({
+      channel: process.env.SLACK_CHANNEL,
+      ts: await client.get(`${process.env.INSTANCE_ID || "production"}.${section.id}.messageId`),
+      text: `*${section.title}*\n\n${rend}\n\n════════════════════════════════════\n`,
+    });
   }
-  var subBlocks = [];
-  let bPromises = fs
-    .readdirSync("./buttons")
-    .filter((str) => str.endsWith(".js"))
-    .sort()
-    .map(async (fn) => {
-      const id = Math.random().toString(32).slice(2);
-      const button = await require(`../buttons/${fn}`);
-      subBlocks.push({
-        type: "button",
-        text: {
-          type: "plain_text",
-          text: button.title,
-          emoji: true,
-        },
-        value: `../buttons/${fn}`,
-        action_id: id,
-      });
-      app.action(id, async ({ ack, respond, say, body }) => {
-        await ack();
+ 
 
-        await app.client.chat.postEphemeral({
-          channel: body.channel.id,
-          user: body.user.id,
-          text: await require(body.actions[0].value).render({
-            app,
-            body,
-            client,
-          }),
-        });
-      });
-    });
 
-  await Promise.all(bPromises);
-
-  try {
-    await updateMessage({
-      app,
-      client,
-      text: `New directory update ${new Date()}`,
-      blocks: [
-        {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: text
-              .replaceAll("@", "​@")
-              .replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "").slice(0,2999),
-          },
-        },
-        {
-          type: "actions",
-          elements: subBlocks,
-        },
-      ],
-      priority: "high",
-    });
-  } catch (e) {}
 };
