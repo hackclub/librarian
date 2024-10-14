@@ -29,7 +29,7 @@ module.exports = {
       .map((match) => match.channel)
 
     const sortedChannels = Object.keys(channelMap)
-      .sort((a, b) => channelMap[b] - channelMap[a])
+      .sort((a, b) => channelMap[a] - channelMap[b])
       .slice(0, 15);
     let text = await Promise.all(
       sortedChannels.map(async (channel) => {
