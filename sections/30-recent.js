@@ -27,7 +27,12 @@ module.exports = {
     );
     const channelMap = channels
       .map((match) => match.channel)
+      .reduce((acc, channel) => {
+        acc[channel] = (acc[channel] || 0) + 1;
+        return acc;
+      }, {});
     const sortedChannels = Object.keys(channelMap)
+      .sort((a, b) => channelMap[b] - channelMap[a])
       .slice(0, 15);
     let text = await Promise.all(
       sortedChannels.map(async (channel) => {
@@ -41,6 +46,7 @@ module.exports = {
         } else {
           return `- ${channelRecord.emoji} <#${channel}>\n`;
         }
+        // (${await timeline({ app, channel })})
       }),
     ).then((texts) => texts.join(""));
     await prisma.$disconnect();
@@ -53,10 +59,8 @@ module.exports = {
       ];
     return (
       `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages[0].channel}>) ${pms(Date.now() - Math.floor(messages[0].ts * 1000))} ago
-
 Below is a scrolling timeline of all messages in Slack going from left to right:
 ${await generateMessageString(channels, Math.floor(Date.now() / 1000), prisma)}
-
 ` + text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "")
     );
   },
