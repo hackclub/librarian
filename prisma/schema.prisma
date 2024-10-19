@@ -18,6 +18,7 @@ model Channel {
   featured    Boolean? @default(false)
   description String?
   personal    Boolean  @default(false)
+  affinity    Boolean  @default(false)
 }
 
 model User {

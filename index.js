@@ -48,6 +48,14 @@ Array.prototype.random = function () {
     })
     res.json(channels)
   });
+  receiver.router.get("/affinity", async (req, res) => {
+    const channels = await prisma.channel.findMany({
+      where: {
+        affinity: true
+      }
+    })
+    res.json(channels)
+  });
 
   await require("./commands/optout")({ app, client, prisma });
   await require("./commands/setlocation")({ app, client, prisma });
