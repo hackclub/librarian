@@ -12,8 +12,8 @@ const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
 
-  });
-  
+});
+
 async function lookupCity(lat, lon) {
     const response = await (
         await fetch(
@@ -38,15 +38,25 @@ module.exports = async function (id, ip) {
         if (!user.user.profile.email)
             return `Sorry, I couldn't lookup your location. This appears to be an issue on our side. Tell an admin that the bot may not have been installed with the \`users:read.email\` scope.`;
         const tableIds = process.env.AIRTABLE_TABLES.split(",");
-        
+
 
         for (const tableId of tableIds) {
+            var formula = ""
+            switch (tableId) {
+                case "tblLXcLHjzTy08IeK":
+                    formula = `fldwcOLKym9dRvKvW = "${user.user.profile.email}"`
+                    break;
+                case "tblQORJfOQcm4CoWn":
+                    formula = `fldv60T8M4itFwTIT = "${user.user.profile.email}"`
+                    break;
+                case "tblErvn4DNjdOKJR2":
+                    formula = `fldFDUVB1h83LchKg = "${user.user.profile.email}"`
+                    break;
+
+            }
             const table = await base(tableId)
                 .select({
-                    filterByFormula:
-                        tableId == "tblLXcLHjzTy08IeK"
-                            ? `fldwcOLKym9dRvKvW = "${user.user.profile.email}"`
-                            : `fldFDUVB1h83LchKg = "${user.user.profile.email}"`,
+                    filterByFormula: formula,
                 })
                 .all();
 
