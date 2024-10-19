@@ -17,6 +17,7 @@ model Channel {
   emoji       String?
   featured    Boolean? @default(false)
   description String?
+  personal    Boolean  @default(false)
 }
 
 model User {

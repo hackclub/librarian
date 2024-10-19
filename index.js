@@ -46,6 +46,8 @@ Array.prototype.random = function () {
   await require("./commands/setuserlocation")({ app, client, prisma });
   await require("./commands/setemoji")({ app, client, prisma });
   await require("./commands/setfeatured")({ app, client, prisma });
+  await require("./commands/setpersonal")({ app, client, prisma });
+
 
 
   // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
