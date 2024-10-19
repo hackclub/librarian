@@ -35,10 +35,18 @@ Array.prototype.random = function () {
     const { id } = req.params
     try {
       const text = await getCloseChannels(id)
-      res.set("Content-Type","text/plain").send(text)
-    } catch(e){
-      res.set("Content-Type","text/plain").send("User not found").status(404)
+      res.set("Content-Type", "text/plain").send(text)
+    } catch (e) {
+      res.set("Content-Type", "text/plain").send("User not found").status(404)
     }
+  });
+  receiver.router.get("/personal", async (req, res) => {
+    const channels = await prisma.channel.findMany({
+      where: {
+        personal: true
+      }
+    })
+    res.json(channels)
   });
 
   await require("./commands/optout")({ app, client, prisma });
