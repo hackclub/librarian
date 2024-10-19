@@ -44,7 +44,7 @@ module.exports = async function ({ app, prisma }) {
                 },
             });
             return await respond(
-                "Your channel has been marked as personal. Run the command again to unmark it.",
+               "This channel has been marked as regular. Run this command again to mark it as personal.",
             );
         }
 
@@ -57,10 +57,6 @@ module.exports = async function ({ app, prisma }) {
                     personal: true
                 },
             });
-        await app.client.chat.postEphemeral({
-            channel: channel.channel.id,
-            user: command.user_id,
-            text: "This channel has been marked as regular. Run this command again to mark it as personal.",
-        });
+        await respond("Your channel has been marked as personal. Run this command again to mark it as regular.")
     });
 };
