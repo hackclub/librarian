@@ -10,16 +10,16 @@
     "dev": "npx nodemon ."
   },
   "dependencies": {
-    "@prisma/client": "5.17.0",
-    "@slack/bolt": "^3.18.0",
+    "@prisma/client": "5.21.1",
+    "@slack/bolt": "^3.22.0",
     "airtable": "^0.12.2",
     "dotenv": "^16.4.5",
-    "figlet": "^1.7.0",
+    "figlet": "^1.8.0",
     "geoip-lite2": "^2.1.43",
     "geolib": "^3.3.4",
     "node-cron": "^3.0.3",
     "pretty-ms": "7.0.1",
-    "prisma": "^5.17.0",
-    "redis": "4.6.13"
+    "prisma": "^5.21.1",
+    "redis": "4.7.0"
   }
 }
