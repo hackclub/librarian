@@ -1,19 +1,18 @@
-# Sussy Location Services
+# Sussy Location Services (SLS)
 
-SLS is a location service which helps Hack Clubbers find each other. It is only used by a few approved applications.
+SLS is a location-based service designed to help Hack Clubbers connect with each other. It’s only accessible to a few approved applications, so your data is secured at all times
 
 ## Data Sources
-- When you sign up for the Hack Club Slack, your IP address is stored. We can geocode your IP address into rough GPS coordinates, then we send those rough coordinates to [Nominatim](https://nominatim.org/), an open source geocoding service which uses OpenStreetMaps.
-  - Librarian/SLS doesn't store your IP address. That is stored in Airtable.
-  - [Hack Club's offical data policy is stored here.](https://github.com/hackclub/chronicle/blob/main/DATA_POLICY.md)
-- You can give us a more accurate location by running the `/setuserlocation [location]` command, where we take that location and store it as GPS coordinates.
-  - Note: You can be as specific (`15 Falls Rd, Shelburne, VT 05482, USA`) or as broad (`Chittenden County, VT`, `Vermont, USA`) as you want.
+- When you sign up for Hack Club's Slack, your IP address is stored. We can convert this IP address into approximate GPS coordinates and send them to [Nominatim](https://nominatim.org/), an open-source geocoding service powered by OpenStreetMaps.
+  - Note: Neither Librarian nor SLS stores your IP address. It is saved in Airtable.
+  - [You can view Hack Club’s official data policy here.](https://github.com/hackclub/chronicle/blob/main/DATA_POLICY.md)
+- You can provide a more precise location by using the `/setuserlocation [location]` command. We will then store your location as GPS coordinates.
+  - You can choose how specific or general your location is, whether it’s detailed (`15 Falls Rd, Shelburne, VT 05482, USA`) or broad (`Chittenden County, VT`, or just `Vermont, USA`).
 
-## What is stored/accessed by SLS
+## What Does SLS Store or Access?
 - Your IP address
 - Your latitude and longitude
 
-## How do I request my data is deleted?
-- You can set your location to something random, like HQ's office and it will immediately overwrite your latitude and longitude, such as `/setuserlocation Shelburne, VT` (where Hack Club's in-person office is)
-- For your IP address, ask hcb@hackclub.com to remove/scramble your record from the Airtable base claled "Slack Join Requests"
-
+## How Can I Request Data Deletion?
+- To remove your location, you can simply overwrite it by setting a new one, like Hack Club’s HQ location. For example, you could run `/setuserlocation Shelburne, VT`, which would replace your current latitude and longitude.
+- To delete or scramble your IP address, email hcb@hackclub.com and request removal from the Airtable base titled “Slack Join Requests.”
