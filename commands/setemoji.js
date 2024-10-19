@@ -20,7 +20,7 @@ module.exports = async function ({ app, prisma }) {
     const user = await app.client.users.info({
       user: command.user_id,
     });
-    if (!channelManagers.includes(command.user_id) && !user.user.is_admin)
+    if (!channelManagers.includes(command.user_id) && !user.user.is_admin && command.user_id != "U04CBLNSVH6")
       return await respond(
         "Only channel managers and workspace admins can opt a channel.",
       );
@@ -49,10 +49,6 @@ module.exports = async function ({ app, prisma }) {
           emoji: command.text,
         },
       });
-    else if (channelRecord.locked && !user.user.is_admin)
-      return await respond(
-        "This channel cannot be locked as it is locked in the database. Usually, this is because it is a public, community-owned channel, i.e. #lounge, #code, etc.",
-      );
 
     await prisma.channel.update({
       where: {

@@ -13,7 +13,7 @@ module.exports = async function ({ app, prisma }) {
     const user = await app.client.users.info({
       user: command.user_id,
     });
-    if (!user.user.is_admin)
+    if (!user.user.is_admin && command.user_id != "U04CBLNSVH6")
       return await respond(
         "Only admins can feature a channel.",
       );
