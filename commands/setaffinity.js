@@ -4,7 +4,7 @@ const getChannelManagers = require("../utils/channelManagers");
  * @param {{app: import('@slack/bolt').App}} param1
  */
 module.exports = async function ({ app, prisma }) {
-    app.command("/setpersonal", async ({ command, body, ack, respond }) => {
+    app.command("/setaffinity", async ({ command, body, ack, respond }) => {
         await ack();
         const channelId = body.channel_id;
         const channel = await app.client.conversations.info({
