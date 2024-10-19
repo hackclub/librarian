@@ -4,7 +4,7 @@ const { createClient } = require("redis");
 const cron = require("node-cron");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+const getCloseChannels = require("./utils/getCloseChannels")
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
@@ -30,6 +30,15 @@ Array.prototype.random = function () {
     .connect();
   receiver.router.get("/", async (req, res) => {
     res.redirect(302, "https://github.com/hackclub/channel-directory");
+  });
+  receiver.router.get("/sls/:id", async (req, res) => {
+    const { id } = req.params
+    try {
+      const text = await getCloseChannels(id)
+      res.set("Content-Type","text/plain").send(text)
+    } catch(e){
+      res.set("Content-Type","text/plain").send("User not found").status(404)
+    }
   });
 
   await require("./commands/optout")({ app, client, prisma });
