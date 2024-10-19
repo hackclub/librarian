@@ -63,6 +63,8 @@ Array.prototype.random = function () {
   await require("./commands/setemoji")({ app, client, prisma });
   await require("./commands/setfeatured")({ app, client, prisma });
   await require("./commands/setpersonal")({ app, client, prisma });
+  await require("./commands/setaffinity")({ app, client, prisma });
+
 
 
 
