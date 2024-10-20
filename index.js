@@ -92,7 +92,12 @@ var activeConnections = [];
   });
   function broadcastMessage(message) {
     activeConnections.forEach((ws) => {
-        ws.send(JSON.stringify(message));
+        try {
+          ws.send(JSON.stringify(message));
+        }
+        catch(e){
+          
+        }
     });
   }
   // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
