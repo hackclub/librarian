@@ -1,11 +1,11 @@
-/**
- * @param {{app: import('@slack/bolt').App}} param1
- */
+
 const emojis = require("./emojis");
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
-
+/**
+  * @param {{app: import('@slack/bolt').App, prisma: import('@prisma/client').PrismaClient}} param1
+ */
 module.exports = async function ({ app, client, prisma }) {
   if (process.env.INSTANCE_ID !== "production") return
   async function rake(cursor) {
@@ -25,6 +25,16 @@ module.exports = async function ({ app, client, prisma }) {
           return;
         }
         if (channel.is_member || channel.is_archived || channel.is_private) {
+          if (channelRecord) {
+            await prisma.channel.update({
+              where: {
+                id: channel.id,
+              },
+              data: {
+                name: channel.name
+              }
+            })
+          }
           resolve();
           return;
         }
@@ -37,6 +47,7 @@ module.exports = async function ({ app, client, prisma }) {
               data: {
                 id: channel.id,
                 emoji: emojis.random(),
+                name: channel.name
               },
             });
           }
