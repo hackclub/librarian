@@ -81,6 +81,18 @@ var activeConnections = [];
     else return res.json({ name: channel.name })
   });
 
+  receiver.router.get("/id/:name", async (req, res) => {
+    const { name } = req.params
+
+    const channel = await prisma.channel.findFirst({
+      where: {
+        name
+      }
+    })
+    if (!channel) return res.json({ id: null })
+    else return res.json({ id: channel.id })
+  });
+
   await require("./commands/optout")({ app, client, prisma });
   await require("./commands/setlocation")({ app, client, prisma });
   await require("./commands/setuserlocation")({ app, client, prisma });
