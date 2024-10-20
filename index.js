@@ -25,6 +25,7 @@ const app = new App({
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
+var activeConnections = [];
 
 (async () => {
   const client = await createClient({
@@ -79,13 +80,29 @@ Array.prototype.random = function () {
   await require("./commands/setaffinity")({ app, client, prisma });
 
 
-
-
+  wss.on('connection', function connection(ws) {
+    activeConnections.push(ws);
+  
+    ws.on('close', () => {
+      const index = activeConnections.indexOf(ws);
+      if (index > -1) {
+        activeConnections.splice(index, 1);
+      }
+    });
+  });
+  function broadcastMessage(message) {
+    activeConnections.forEach((ws) => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(message));
+      }
+    });
+  }
   // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
   // This runs the same thing on startup
   await require("./utils/redo")({ app, client, prisma });
   // app.message functions go here
-  await require("./interactions/message")({ app, client, prisma, wss });
+
+  await require("./interactions/message")({ app, client, prisma, broadcastMessage });
 
 
   setInterval(async function () {

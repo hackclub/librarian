@@ -3,7 +3,7 @@ const utils = require("../utils");
 /**
  * @param {{app: import('@slack/bolt').App, client: import('redis').RedisClientType}} param1
  */
-module.exports = ({ app, client, wss }) => {
+module.exports = ({ app, client, broadcastMessage }) => {
   app.message(/.*/gim, async ({ message, say, body }) => {
     if (message.channel == process.env.SLACK_CHANNEL)
       await app.client.chat.delete({
@@ -12,9 +12,7 @@ module.exports = ({ app, client, wss }) => {
         token: process.env.SLACK_BOT_TOKEN,
       });
     if (utils.blockedChannels.includes(message.channel)) return;
-    wss.on('connection', function connection(ws) {
-      ws.send(JSON.stringify(message));
-    });
+    broadcastMessage(message)
     message.sort_ts = +new Date() / 1000.0;
     client.lPush(
       `${process.env.INSTANCE_ID || "production"}.messageCache`,
