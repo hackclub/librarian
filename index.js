@@ -92,9 +92,7 @@ var activeConnections = [];
   });
   function broadcastMessage(message) {
     activeConnections.forEach((ws) => {
-      if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify(message));
-      }
     });
   }
   // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
