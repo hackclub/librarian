@@ -5,10 +5,14 @@ const cron = require("node-cron");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const getCloseChannels = require("./utils/getCloseChannels")
+const { WebSocketServer } = require("ws")
+const { createServer } = require('node:http');
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
 
+});
+const server = createServer(receiver.app);
+const wss = new WebSocketServer({ server: server })
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -28,9 +32,9 @@ Array.prototype.random = function () {
   })
     .on("error", (err) => console.error("Redis Client Error", err))
     .connect();
-  receiver.router.get("/", async (req, res) => {
-    res.redirect(302, "https://github.com/hackclub/channel-directory");
-  });
+  /* receiver.router.get("/", async (req, res) => {
+     res.redirect(302, "https://github.com/hackclub/channel-directory");
+   });*/
   receiver.router.get("/sls/:id", async (req, res) => {
     const { id } = req.params
     try {
@@ -81,7 +85,7 @@ Array.prototype.random = function () {
   // This runs the same thing on startup
   await require("./utils/redo")({ app, client, prisma });
   // app.message functions go here
-  await require("./interactions/message")({ app, client, prisma });
+  await require("./interactions/message")({ app, client, prisma, wss });
 
 
   setInterval(async function () {
@@ -93,8 +97,11 @@ Array.prototype.random = function () {
     await require("./utils/joinall")({ app, client, prisma });
   });
 
-  console.log("Librarian has started.");
-  await app.start(process.env.PORT || 3000);
+
+  server.listen(process.env.PORT || 3000, () => {
+    console.log("Librarian has started.");
+  });
+  await app.start();
   require("./interactions/channel_created")({ app, client });
   if (process.env.INSTANCE_ID == "production") await require("./utils/joinall")({ app, client, prisma });
 
