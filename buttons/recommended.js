@@ -5,8 +5,8 @@ module.exports = {
     /**
      * @param {{app: import('@slack/bolt').App}} param1
      */
-    render: async function ({ app }) {
-        var recommends = await client.getRecommend({ userId: body.user_id, cursorOptions: { n: 10 } })
+    render: async function ({ app, body }) {
+        var recommends = await client.getRecommend({ userId: body.user.id, cursorOptions: { n: 10 } })
 
         recommends = recommends.map(rec => `- <#${rec}>`).join("\n")
         return `Recyard in *beta*. Based on your recent history in the Slack, here are some channels recommended for you:
