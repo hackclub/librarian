@@ -1,6 +1,6 @@
 const figlet = require("figlet");
 module.exports = {
-  title: "Hardware",
+  title: "🔨 Hardware",
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */

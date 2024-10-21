@@ -23,7 +23,7 @@ async function lookupCity(lat, lon) {
 }
 
 module.exports = {
-  title: "Find Local Hack Clubbers",
+  title: "🧭 Local Channels",
   /**
    * @param {{app: import('@slack/bolt').App}} param1
    */
