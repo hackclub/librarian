@@ -104,7 +104,23 @@ var activeConnections = [];
 
   wss.on('connection', function connection(ws) {
     activeConnections.push(ws);
-  
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message);
+
+        if (data.apiKey && data.apiKey === process.env.WS_API_KEY) {
+          ws.loggedIn = true
+          const index = activeConnections.indexOf(ws);
+          if (index > -1) {
+            activeConnections.splice(index, 1);
+            activeConnections.push(ws)
+          }
+        }
+      } catch (e) {
+        console.error('Failed to parse message', e);
+      }
+    });
+
     ws.on('close', () => {
       const index = activeConnections.indexOf(ws);
       if (index > -1) {
@@ -113,14 +129,17 @@ var activeConnections = [];
     });
   });
   function broadcastMessage(message) {
+
     activeConnections.forEach((ws) => {
+      if (ws.loggedIn) {
         try {
           ws.send(JSON.stringify(message));
+        } catch (e) {
+          console.error('Failed to send message', e);
         }
-        catch(e){
-          
-        }
+      }
     });
+
   }
   // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
   // This runs the same thing on startup
