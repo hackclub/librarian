@@ -84,7 +84,7 @@ var activeConnections = [];
     const channels = await prisma.channel.findMany({
       where: {
         id: {
-          not: null
+          not: "123"
         }
       }
     })
@@ -93,6 +93,7 @@ var activeConnections = [];
       channel.lon = null;
       return channel
     }))
+    
   });
   receiver.router.get("/id/:name", async (req, res) => {
     const { name } = req.params
