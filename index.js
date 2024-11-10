@@ -80,7 +80,20 @@ var activeConnections = [];
     if (!channel) return res.json({ name: null })
     else return res.json({ name: channel.name })
   });
-
+  receiver.router.get("/channels", async (req, res) => {
+    const channels = await prisma.channel.findMany({
+      where: {
+        id: {
+          not: null
+        }
+      }
+    })
+    return res.json(channels.map(channel => {
+      channel.lat = null;
+      channel.lon = null;
+      return channel
+    }))
+  });
   receiver.router.get("/id/:name", async (req, res) => {
     const { name } = req.params
 
