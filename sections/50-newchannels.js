@@ -15,7 +15,6 @@ module.exports = {
                 createdAt: 'desc',
             },
         });
-        console.log(channels)
         const c = channels.slice(0, 10).map(channel => `- ${channel.emoji} <#${channel.id}>${channel.personal? " :bust_in_silhouette:":""}`).join("\n")
         return `Here's a list of recently created channels:\n${c}`
             .replaceAll("@", "​@")
