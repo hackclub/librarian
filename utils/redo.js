@@ -78,6 +78,7 @@ module.exports = async function ({ app, client }) {
       var msg = await app.client.chat.postMessage({
         channel: process.env.SLACK_CHANNEL,
         text: `:spin-loading: Loading library section: ${fn.id}`,
+        mrkdwn: true
       });
       await client.set(
         `${process.env.INSTANCE_ID || "production"}.${fn.id}.messageId`,
