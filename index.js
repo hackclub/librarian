@@ -115,6 +115,7 @@ var activeConnections = [];
   await require("./commands/setpersonal")({ app, client, prisma });
   await require("./commands/setaffinity")({ app, client, prisma });
   await require("./commands/useroptout")({ app, client, prisma });
+  await require("./commands/emojigenerate")({ app, client, prisma });
 
 
   wss.on('connection', function connection(ws) {
