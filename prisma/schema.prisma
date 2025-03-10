@@ -20,6 +20,7 @@ model Channel {
   personal    Boolean  @default(false)
   affinity    Boolean  @default(false)
   name        String?
+  emojiSet     Boolean @default(false)
 }
 
 model User {

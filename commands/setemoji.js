@@ -47,6 +47,7 @@ module.exports = async function ({ app, prisma }) {
         data: {
           id: channelId,
           emoji: command.text,
+          emojiSet: true
         },
       });
 
@@ -57,6 +58,7 @@ module.exports = async function ({ app, prisma }) {
       data: {
         optout: false,
         emoji: command.text,
+        emojiSet: true
       },
     });
     await app.client.chat.postEphemeral({
