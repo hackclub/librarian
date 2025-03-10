@@ -11,7 +11,7 @@ module.exports = async function ({ app, prisma }) {
                 id: body.channel_id,
             },
         });
-        if (!channelRecord.emojiSet) {
+        if (channelRecord.emojiSet) {
             return await respond(
                 "The emoji has already been set by a user.",
             );
