@@ -35,7 +35,12 @@ async function rake(cursor) {
       }
 
       try {
-        const emoji = emojis.random();
+        var emoji = ""
+        try {
+          emoji = (await generateEmoji({ app, id: channelId }));
+        } catch (e) {
+          emoji = emojis.random();
+        }
         await prisma.channel.create({
           data: {
             id: channel.id,

@@ -42,11 +42,17 @@ module.exports = async function ({ app, client, prisma }) {
           await app.client.conversations.join({
             channel: channel.id,
           });
+          var emoji = ""
+          try {
+            emoji = (await generateEmoji({ app, id: channel.id }));
+          } catch (e) {
+            emoji = emojis.random();
+          }
           if (!channelRecord) {
             await prisma.channel.create({
               data: {
                 id: channel.id,
-                emoji: emojis.random(),
+                emoji: emoji,
                 name: channel.name
               },
             });
