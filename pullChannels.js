@@ -37,7 +37,7 @@ async function rake(cursor) {
       try {
         var emoji = ""
         try {
-          emoji = (await generateEmoji({ app, id: channelId }));
+          emoji = (await generateEmoji({ app, id: channel.id }));
         } catch (e) {
           emoji = emojis.random();
         }

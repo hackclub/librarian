@@ -8,19 +8,20 @@ datasource db {
 }
 
 model Channel {
-  id          String   @id @unique
-  createdAt   DateTime @default(now())
-  lat         String?
-  lon         String?
-  optout      Boolean  @default(false)
-  locked      Boolean  @default(false)
-  emoji       String?
-  featured    Boolean? @default(false)
-  description String?
-  personal    Boolean  @default(false)
-  affinity    Boolean  @default(false)
-  name        String?
-  emojiSet     Boolean @default(false)
+  id              String   @id @unique
+  createdAt       DateTime @default(now())
+  lat             String?
+  lon             String?
+  optout          Boolean  @default(false)
+  locked          Boolean  @default(false)
+  emoji           String?
+  featured        Boolean? @default(false)
+  description     String?
+  personal        Boolean  @default(false)
+  affinity        Boolean  @default(false)
+  name            String?
+  emojiSet        Boolean  @default(false)
+  channelManagers String[] @default([])
 }
 
 model User {

@@ -157,6 +157,7 @@ var activeConnections = [];
     });
 
   }
+  await require("./rakeManagers.js")(prisma);
   // This deletes and sends a new message to bypass the 10 day editing limit and to show up on the user's unread channel list
   // This runs the same thing on startup
   await require("./utils/redo")({ app, client, prisma });
@@ -166,6 +167,7 @@ var activeConnections = [];
 
 
   setInterval(async function () {
+    await require("./rakeManagers.js")(prisma);
     await require("./utils/pull")({ app, client, prisma });
   }, 1000 * 10)
   cron.schedule("0 0,12 * * *", async () => {

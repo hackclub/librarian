@@ -1,0 +1,18 @@
+module.exports = async function rake(prisma) {
+    const channels = await prisma.channel.findMany({
+        where: {
+            personal: true
+        }
+    })
+
+    channels.map(async channel => {
+        await prisma.channel.update({
+            where: {
+                id: channel.id
+            },
+            data: {
+                channelManagers: (await require("./utils/channelManagers")(channel.id))
+            }
+        })
+    })
+}
