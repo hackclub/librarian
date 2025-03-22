@@ -37,7 +37,8 @@ var activeConnections = [];
      res.redirect(302, "https://github.com/hackclub/channel-directory");
    });*/
   receiver.router.get("/sls/:id", async (req, res) => {
-    const { id } = req.params
+    const { id, key } = req.params
+    if (process.env.WS_API_KEY != key) return res.json([]).status(401)
     try {
       const text = await getCloseChannels(id)
       res.set("Content-Type", "text/plain").send(text)
