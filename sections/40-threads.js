@@ -51,7 +51,7 @@ module.exports = {
     uniqueMessages.forEach(function (msg) {
       // There is a zero width space in the below "replaceAll".
       // This prevents users from being pinged.
-      text += `${reduceText(msg.text, msg.permalink)
+      text += `\n${reduceText(msg.text, msg.permalink)
         .split("\n")
         .map((str) => "> " + str)
         .join("\n")
@@ -61,7 +61,7 @@ module.exports = {
         .replaceAll(
           "@",
           "​@",
-        )}\nFrom <#${msg.channel}> (<${msg.permalink}|Source>)\n`;
+        )}\n From <#${msg.channel}> (<${msg.permalink}|Source>)\n`;
     });
     return text
       .replaceAll("@", "​@")
