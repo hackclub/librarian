@@ -77,7 +77,7 @@ module.exports = async function ({ app, client }) {
     for (const fn of sFilesSorted) {
       var msg = await app.client.chat.postMessage({
         channel: process.env.SLACK_CHANNEL,
-        text: `:spin-loading: Loading library section: ${fn.id}`,
+        markdown_text: `:spin-loading: Loading library section: ${fn.id}`,
         mrkdwn: true
       });
       await client.set(

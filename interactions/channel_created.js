@@ -4,11 +4,11 @@ const generateEmoji = require("../utils/generateEmoji")
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
-
+/**
+ * @param {{app: import('@slack/bolt').App, prisma: import('@prisma/client').PrismaClient}} param1
+ */
 module.exports = ({ app, client, prisma }) => {
-  /**
-   * @param {{app: import('@slack/bolt').App}} param1
-   */
+
   app.event("channel_created", async ({ event, body }) => {
     const channelId = event.channel.id;
     const userId = event.channel.creator;
@@ -20,6 +20,7 @@ module.exports = ({ app, client, prisma }) => {
     try {
       emoji = (await generateEmoji({ app, id: channelId }));
     } catch (e) {
+      console.error(e)
       emoji = emojis.random();
     }
 
