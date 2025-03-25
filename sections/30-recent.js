@@ -31,24 +31,37 @@ module.exports = {
         acc[channel] = (acc[channel] || 0) + 1;
         return acc;
       }, {});
-    const sortedChannels = Object.keys(channelMap)
-      .sort((a, b) => channelMap[b] - channelMap[a])
-      .slice(0, 10);
-    let text = await Promise.all(
-      sortedChannels.map(async (channel) => {
-        const channelRecord = await prisma.channel.findFirst({
-          where: {
-            id: channel,
-          },
-        });
-        if (!channelRecord || !channelRecord.emoji) {
-          return `- <#${channel}>\n`;
-        } else {
-          return `- ${channelRecord.emoji} <#${channel}>\n`;
-        }
-        // (${await timeline({ app, channel })})
-      }),
-    ).then((texts) => texts.join(""));
+      const prioritizedChannels = await generateMessageString(
+        channels,
+        Math.floor(Date.now() / 1000),
+        prisma,
+      ).then((result) => {
+        const channelMatches = result.match(/<#(\w+)>/g) || [];
+        return channelMatches.map((match) => match.replace(/<#|>/g, ""));
+      });
+      
+      const allChannels = Array.from(
+        new Set([...prioritizedChannels, ...Object.keys(channelMap)]),
+      );
+      
+      const sortedChannels = allChannels
+        .sort((a, b) => (channelMap[b] || 0) - (channelMap[a] || 0))
+        .slice(0, 20);
+      
+      let text = await Promise.all(
+        sortedChannels.map(async (channel) => {
+          const channelRecord = await prisma.channel.findFirst({
+            where: {
+              id: channel,
+            },
+          });
+          if (!channelRecord || !channelRecord.emoji) {
+            return `- <#${channel}>\n`;
+          } else {
+            return `- ${channelRecord.emoji} <#${channel}>\n`;
+          }
+        }),
+      ).then((texts) => texts.join(""));
     await prisma.$disconnect();
     if (!messages || messages.length === 0)
       messages = [
