@@ -35,12 +35,6 @@ module.exports = {
     "C063RPGKRL2", // scrapbook
     "C073DL2R5NK", // flight board for trail
     "C07ST3FF4S0",
+    "C07N9V114UQ"  // slick stats
   ],
-  queries: {
-    topThreads: `-is:dm is:thread -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks -in:#trail-flightboard`,
-    topChannels: `-is:dm -in:#arcade -in:#arcade-help -in:#arcade-lounge -in:#confessions -in:#meta -in:#scrapbook -in:#hackclub-leeks -in:#trail-flightboard`,
-  },
-  channelEmojis: {
-    C056AMWSFKJ: "⚙️",
-  },
 };
