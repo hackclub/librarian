@@ -17,11 +17,13 @@ model Channel {
   emoji           String?
   featured        Boolean? @default(false)
   description     String?
+  userDescription String?
   personal        Boolean  @default(false)
   affinity        Boolean  @default(false)
   name            String?
   emojiSet        Boolean  @default(false)
   channelManagers String[] @default([])
+  rotating        Boolean  @default(false)
 }
 
 model User {
