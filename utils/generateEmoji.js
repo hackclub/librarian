@@ -27,7 +27,7 @@ module.exports = async function ({ app, id }) {
     });
 
     const data = await response.json();
-    return data.choices[0].message.content;
+    return (data.choices[0].message.content.match(/[\p{Emoji}]/u) || [])[0];
 
 
 }
