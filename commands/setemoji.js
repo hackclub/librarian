@@ -29,12 +29,13 @@ module.exports = async function ({ app, prisma }) {
         id: channelId,
       },
     });
+    if (command.text.length > 48) return await respond("Please stop trying to submit broken emojis. It's not funny.");
     if (
       !command.text &&
       !command.text.match(/:[a-zA-Z0-9_-]+:/) &&
       !emojis.includes(command.text)
     )
-      return await respond("Please provide an emoji");
+      return await respond("Please provide an emoji.");
 
     if (!channel.channel.is_member)
       try {
