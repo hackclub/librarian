@@ -23,30 +23,32 @@ module.exports = async function ({ app, prisma }) {
         id: channelId,
       },
     });
-    if (!channelRecord)
+    let newOptout;
+    if (!channelRecord) {
+      newOptout = true;
       await prisma.channel.create({
         data: {
           id: channelId,
           optout: true,
         },
       });
-    else if (channelRecord.optout) {
+    } else if (channelRecord.optout) {
+      newOptout = false;
       await prisma.channel.update({
         where: {
           id: channelId,
         },
         data: {
-          optout: true,
+          optout: false,
           lat: null,
           lon: null,
         },
       });
       return await respond(
-        "Your channel has been updated to show in #library. Run the command again to remove it.",
+        "Your channel has been updated to show in #library.",
       );
-    }
-
-    else
+    } else {
+      newOptout = true;
       await prisma.channel.update({
         where: {
           id: channelId,
@@ -57,6 +59,7 @@ module.exports = async function ({ app, prisma }) {
           lon: null,
         },
       });
+    }
     await app.client.chat.postEphemeral({
       channel: channel.channel.id,
       user: command.user_id,
