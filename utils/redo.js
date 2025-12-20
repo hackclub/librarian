@@ -28,7 +28,7 @@ module.exports = async function ({ app, client }) {
   const file = await Buffer.from(
     await (
       await fetch(
-        "https://cloud-6frqejd8v-hack-club-bot.vercel.app/0hack-club-anime.png",
+        "https://hc-cdn.hel1.your-objectstorage.com/s/v3/537e349bd8fc9ae2_image.png",
       )
     ).arrayBuffer(),
   );
