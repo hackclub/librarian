@@ -28,7 +28,7 @@ module.exports = async function ({ app, client }) {
   const file = await Buffer.from(
     await (
       await fetch(
-        "https://hc-cdn.hel1.your-objectstorage.com/s/v3/537e349bd8fc9ae2_image.png",
+        "https://cdn.hackclub.com/rescue?url=https://hc-cdn.hel1.your-objectstorage.com/s/v3/537e349bd8fc9ae2_image.png",
       )
     ).arrayBuffer(),
   );
