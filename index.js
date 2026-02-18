@@ -180,3 +180,6 @@ var activeConnections = [];
   if (process.env.INSTANCE_ID == "production") await require("./utils/joinall")({ app, client, prisma });
 
 })();
+process.on('uncaughtException', (error) => {
+  console.error(error);
+});
