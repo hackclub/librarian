@@ -157,11 +157,12 @@ var activeConnections = [];
 
   await require("./interactions/message")({ app, client, prisma, broadcastMessage });
 
-
   setInterval(async function () {
     await require("./rakeManagers.js")(prisma);
+  }, 1000 * 60 * 15)
+  setInterval(async function () {
     await require("./utils/pull")({ app, client, prisma });
-  }, 1000 * 10)
+  }, 1000 * 3)
   cron.schedule("0 0,12 * * *", async () => {
     await client.del(`${process.env.INSTANCE_ID || "production"}.messageCache`);
     await require("./utils/redo")({ app, client, prisma });
