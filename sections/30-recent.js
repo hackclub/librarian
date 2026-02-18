@@ -34,15 +34,19 @@ module.exports = {
         return acc;
       }, {});
 
-    const prioritizedChannels = (timelineString.match(/<#(\w+)>/g) || []).map(
-      (match) => match.replace(/<#|>/g, ""),
-    );
+    const timelineChannelIds = [...new Set(
+      (timelineString.match(/archives\/(\w+)\//g) || []).map(
+        (match) => match.replace(/archives\/|\/$/g, ""),
+      ),
+    )];
 
-    const allChannelIds = Array.from(
-      new Set([...prioritizedChannels, ...Object.keys(channelMap)]),
-    )
-      .sort((a, b) => (channelMap[b] || 0) - (channelMap[a] || 0))
+    const sortedByActivity = Object.keys(channelMap)
+      .sort((a, b) => channelMap[b] - channelMap[a])
       .slice(0, 20);
+
+    const topSet = new Set(sortedByActivity);
+    const extraFromTimeline = timelineChannelIds.filter((id) => !topSet.has(id));
+    const allChannelIds = [...sortedByActivity, ...extraFromTimeline];
 
     const channelRecords = await prisma.channel.findMany({
       where: { id: { in: allChannelIds } },
