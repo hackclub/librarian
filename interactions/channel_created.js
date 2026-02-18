@@ -1,9 +1,6 @@
 const emojis = require("../utils/emojis");
-const generateEmoji = require("../utils/generateEmoji")
+const generateEmoji = require("../utils/generateEmoji");
 
-Array.prototype.random = function () {
-  return this[Math.floor(Math.random() * this.length)];
-};
 /**
  * @param {{app: import('@slack/bolt').App, prisma: import('@prisma/client').PrismaClient}} param1
  */
@@ -16,12 +13,12 @@ module.exports = ({ app, client, prisma }) => {
       channel: channelId,
     });
 
-    var emoji = ""
+    var emoji = "";
     try {
-      emoji = (await generateEmoji({ app, id: channelId }));
+      emoji = await generateEmoji({ app, id: channelId });
     } catch (e) {
-      console.error(e)
-      emoji = emojis.random();
+      console.error(e);
+      emoji = emojis[Math.floor(Math.random() * emojis.length)];
     }
 
     await prisma.channel.create({

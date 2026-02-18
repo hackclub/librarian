@@ -131,3 +131,5 @@ dist
 sections/1-secret.js
 
 hotfix-emojis.js
+
+.DS_Store

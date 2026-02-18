@@ -16,15 +16,12 @@ const wss = new WebSocketServer({ server: server })
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  socketMode: !process.env.PORT,
+  socketMode: process.env.NODE_ENV == "production" ? false : true,
   appToken: process.env.SLACK_APP_TOKEN,
   port: process.env.PORT,
   receiver: process.env.PORT ? receiver : undefined,
 });
 
-Array.prototype.random = function () {
-  return this[Math.floor(Math.random() * this.length)];
-};
 var activeConnections = [];
 
 (async () => {
@@ -48,35 +45,31 @@ var activeConnections = [];
   });
   receiver.router.get("/personal", async (req, res) => {
     const channels = await prisma.channel.findMany({
-      where: {
-        personal: true
-      }
+      where: { personal: true },
+      select: { id: true, name: true, emoji: true, description: true },
     })
     res.json(channels)
   });
   receiver.router.get("/affinity", async (req, res) => {
     const channels = await prisma.channel.findMany({
-      where: {
-        affinity: true
-      }
+      where: { affinity: true },
+      select: { id: true, name: true, emoji: true, description: true },
     })
     res.json(channels)
   });
   receiver.router.get("/featured", async (req, res) => {
     const channels = await prisma.channel.findMany({
-      where: {
-        featured: true
-      }
+      where: { featured: true },
+      select: { id: true, name: true, emoji: true, description: true },
     })
     res.json(channels)
   });
   receiver.router.get("/name/:id", async (req, res) => {
     const { id } = req.params
 
-    const channel = await prisma.channel.findFirst({
-      where: {
-        id
-      }
+    const channel = await prisma.channel.findUnique({
+      where: { id },
+      select: { name: true },
     })
     if (!channel) return res.json({ name: null })
     else return res.json({ name: channel.name })
@@ -87,14 +80,15 @@ var activeConnections = [];
         id: {
           not: "123"
         }
-      }
+      },
+
     })
     return res.json(channels.map(channel => {
       channel.lat = null;
       channel.lon = null;
       return channel
     }))
-    
+
   });
   receiver.router.get("/id/:name", async (req, res) => {
     const { name } = req.params
@@ -109,12 +103,9 @@ var activeConnections = [];
   });
 
   await require("./commands/optout")({ app, client, prisma });
-  await require("./commands/setlocation")({ app, client, prisma });
-  await require("./commands/setuserlocation")({ app, client, prisma });
   await require("./commands/setemoji")({ app, client, prisma });
   await require("./commands/setfeatured")({ app, client, prisma });
   await require("./commands/setpersonal")({ app, client, prisma });
-  await require("./commands/setaffinity")({ app, client, prisma });
   await require("./commands/useroptout")({ app, client, prisma });
   await require("./commands/emojigenerate")({ app, client, prisma });
 
@@ -178,11 +169,13 @@ var activeConnections = [];
   });
 
 
-  server.listen(process.env.PORT || 3000, () => {
-    console.log("Librarian has started.");
-  });
+  if (!!process.env.PORT) {
+    server.listen(process.env.PORT || 3000, () => {
+      console.log("Librarian has started.");
+    });
+  }
   await app.start();
-  require("./interactions/channel_created")({ app, client, prisma});
+  require("./interactions/channel_created")({ app, client, prisma });
   if (process.env.INSTANCE_ID == "production") await require("./utils/joinall")({ app, client, prisma });
 
 })();

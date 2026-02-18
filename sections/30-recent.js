@@ -1,9 +1,7 @@
 const pms = require("pretty-ms");
 const utils = require("../utils");
-const util = require("util");
 const generateMessageString = require("../utils/allTimeline");
 
-//const timeline = require("../utils/timeline.disabled.js")
 module.exports = {
   title: "🆕 Most Recent Activity",
   id: "recent",
@@ -25,44 +23,40 @@ module.exports = {
         match.text != "archived the channel" &&
         !utils.blockedChannels.includes(match.channel),
     );
+
+    const now = Math.floor(Date.now() / 1000);
+    const timelineString = await generateMessageString(channels, now, prisma);
+
     const channelMap = channels
       .map((match) => match.channel)
       .reduce((acc, channel) => {
         acc[channel] = (acc[channel] || 0) + 1;
         return acc;
       }, {});
-      const prioritizedChannels = await generateMessageString(
-        channels,
-        Math.floor(Date.now() / 1000),
-        prisma,
-      ).then((result) => {
-        const channelMatches = result.match(/<#(\w+)>/g) || [];
-        return channelMatches.map((match) => match.replace(/<#|>/g, ""));
-      });
-      
-      const allChannels = Array.from(
-        new Set([...prioritizedChannels, ...Object.keys(channelMap)]),
-      );
-      
-      const sortedChannels = allChannels
-        .sort((a, b) => (channelMap[b] || 0) - (channelMap[a] || 0))
-        .slice(0, 20);
-      
-      let text = await Promise.all(
-        sortedChannels.map(async (channel) => {
-          const channelRecord = await prisma.channel.findFirst({
-            where: {
-              id: channel,
-            },
-          });
-          if (!channelRecord || !channelRecord.emoji) {
-            return `- <#${channel}>\n`;
-          } else {
-            return `- ${channelRecord.emoji} <#${channel}>\n`;
-          }
-        }),
-      ).then((texts) => texts.join(""));
-    await prisma.$disconnect();
+
+    const prioritizedChannels = (timelineString.match(/<#(\w+)>/g) || []).map(
+      (match) => match.replace(/<#|>/g, ""),
+    );
+
+    const allChannelIds = Array.from(
+      new Set([...prioritizedChannels, ...Object.keys(channelMap)]),
+    )
+      .sort((a, b) => (channelMap[b] || 0) - (channelMap[a] || 0))
+      .slice(0, 20);
+
+    const channelRecords = await prisma.channel.findMany({
+      where: { id: { in: allChannelIds } },
+      select: { id: true, emoji: true },
+    });
+    const emojiMap = new Map(channelRecords.map((c) => [c.id, c.emoji]));
+
+    const text = allChannelIds
+      .map((channel) => {
+        const emoji = emojiMap.get(channel);
+        return emoji ? `- ${emoji} <#${channel}>\n` : `- <#${channel}>\n`;
+      })
+      .join("");
+
     if (!messages || messages.length === 0)
       messages = [
         {
@@ -70,13 +64,11 @@ module.exports = {
           channel: process.env.SLACK_CHANNEL,
         },
       ];
-      delete messages;
     return (
       `This is a list of conversations that are actively ongoing and that you can jump in at any time and meet new people :yay:\n\n:siren-real: Latest message: (in <#${messages[0].channel}>) ${pms(Date.now() - Math.floor(messages[0].ts * 1000))} ago
 Below is a scrolling timeline of all messages in Slack going from left to right:
-${await generateMessageString(channels, Math.floor(Date.now() / 1000), prisma)}
+${timelineString}
 ` + text.replaceAll("@", "​@").replaceAll(/[\u{1F3FB}-\u{1F3FF}]/gmu, "")
     );
-   
   },
 };

@@ -1,5 +1,4 @@
 const utils = require("../utils");
-const { createClient } = require("redis");
 
 module.exports = {
   title: "🧵 Top 10 most recently active threads",
