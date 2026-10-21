@@ -23,11 +23,15 @@ module.exports = async function ({ app, client, prisma }) {
         "@",
         "​@",
       )
-    await app.client.chat.update({
-      channel: process.env.SLACK_CHANNEL,
-      ts: await client.get(`${process.env.INSTANCE_ID || "production"}.${section.id}.messageId`),
-      markdown_text: `**${section.title}**\n\n${rend}\n\n════════════════════════════════════\n`
-    });
+    try {
+      await app.client.chat.update({
+        channel: process.env.SLACK_CHANNEL,
+        ts: await client.get(`${process.env.INSTANCE_ID || "production"}.${section.id}.messageId`),
+        markdown_text: `**${section.title}**\n\n${rend}\n\n════════════════════════════════════\n`,
+      });
+    } catch (e) {
+console.error(e)
+    }
   }
 
 
