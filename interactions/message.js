@@ -8,6 +8,7 @@ const MAX_CACHE_SIZE = 5000;
 module.exports = ({ app, client, broadcastMessage, prisma }) => {
   app.message(/.*/gim, async ({ message, say, body }) => {
     if (utils.blockedChannels.includes(message.channel)) return;
+    if (!message.user) console.warn("[warn] no user given");
     const userRecord = await prisma.user.findUnique({
       where: { id: message.user },
       select: { optout: true },

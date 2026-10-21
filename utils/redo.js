@@ -86,7 +86,7 @@ module.exports = async function ({ app, client }) {
       )
     }
 
-    await app.client.chat.postMessage({
+  /*  await app.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
       text: "Find more sections tailored to you by clicking a button below!",
       blocks: [
@@ -102,7 +102,7 @@ module.exports = async function ({ app, client }) {
           elements: subBlocks,
         },
       ],
-    });
+    });*/
 
   }, 5000);
 };
